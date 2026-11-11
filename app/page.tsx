@@ -1,5 +1,6 @@
 import { Prisma, PrismaClient } from "@prisma/client";
 import Catalog from "@/components/Catalog";
+import AboutSection from "@/components/AboutSection";
 import HeroSection from "@/components/HeroSection";
 
 export const dynamic = "force-dynamic";
@@ -50,6 +51,7 @@ export default function Home() {
           <ProductList />
         </div>
       </section>
+      <AboutSection />
     </main>
   );
 }
