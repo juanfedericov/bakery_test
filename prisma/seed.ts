@@ -14,6 +14,16 @@ const catalog = [
     name: "Tortas de Cumpleaños",
     products: [
       {
+        id: "seed-torta-rogel",
+        name: "Torta Rogel",
+        description: "Capas finas y crocantes de masa, rellenas de dulce de leche y coronadas con merengue.",
+        ingredients: "Harina de trigo, yemas de huevo, manteca, leche, agua, sal, dulce de leche, claras de huevo y azúcar.",
+        servings: "Rinde 10 a 12 personas",
+        flavor: "Dulce de leche y merengue",
+        price: "30000.00",
+        imageUrl: cakeImage,
+      },
+      {
         id: "seed-torta-chocolate",
         name: "Torta de chocolate",
         description: "Bizcochuelo de chocolate con relleno y cobertura de chocolate.",

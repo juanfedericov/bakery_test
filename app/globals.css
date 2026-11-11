@@ -55,9 +55,23 @@ a:focus-visible, button:focus-visible, summary:focus-visible { outline: 3px soli
 .catalog-filter[aria-pressed="true"] { border-color: var(--rose); background: var(--rose); color: white; }
 .catalog-filter:focus-visible { outline: 3px solid var(--rose); outline-offset: 3px; }
 .product-list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-top: 40px; }
-.product-card { border: 1px solid #e7d8cb; background: #fffaf5; padding: 24px; }
+.product-card { border: 1px solid #e7d8cb; background: #fffaf5; }
+.product-card-button { display: block; width: 100%; height: 100%; padding: 24px; text-align: left; cursor: pointer; }
+.product-card-button:hover { background: #f8f0e6; }
 .product-card h3 { font-family: Georgia, serif; font-size: 22px; }
 .product-card p { margin-top: 10px; color: var(--muted); font-size: 14px; line-height: 1.6; }
+.product-card-link { display: block; margin-top: 20px; color: var(--rose); font-size: 13px; font-weight: 700; }
+.product-modal { position: fixed; inset: 0; width: min(100% - 32px, 560px); max-height: min(90vh, 800px); margin: auto; border: 1px solid #e7d8cb; background: #fffaf5; color: var(--ink); overflow-y: auto; }
+.product-modal::backdrop { background: rgb(61 41 37 / 65%); }
+.product-modal-content { position: relative; padding: 42px; }
+.product-modal-close { position: absolute; top: 16px; right: 20px; width: 36px; height: 36px; color: var(--ink); font-size: 30px; line-height: 1; cursor: pointer; }
+.product-modal h2 { margin: 14px 36px 16px 0; font-family: Georgia, serif; font-size: clamp(32px, 5vw, 42px); line-height: 1.1; }
+.product-modal-description, .product-modal-section p { color: var(--muted); line-height: 1.7; }
+.product-modal-section { margin-top: 24px; }
+.product-modal-section h3, .product-modal-section label { display: block; margin-bottom: 8px; font-size: 14px; font-weight: 700; }
+.product-modal-section label span { color: var(--muted); font-weight: 400; }
+.product-modal textarea { display: block; width: 100%; padding: 12px; border: 1px solid #cdbbb0; background: white; color: var(--ink); resize: vertical; }
+.product-modal-section .product-notes-help { margin-top: 8px; font-size: 12px; }
 .about-section { scroll-margin-top: 20px; padding: 100px 7% 120px; background: #f8f0e6; }
 .about-inner { max-width: 1238px; margin: auto; }
 .about-heading { max-width: 620px; }
@@ -88,6 +102,7 @@ a:focus-visible, button:focus-visible, summary:focus-visible { outline: 3px soli
   .hero-bottom span:last-child { text-align: right; }
   .catalog-section { padding: 75px 6% 90px; }
   .product-list { grid-template-columns: 1fr; }
+  .product-modal-content { padding: 32px 24px; }
   .about-section { padding: 75px 6% 90px; }
   .about-features { grid-template-columns: 1fr; margin-top: 32px; }
   .about-feature { padding: 28px; }
