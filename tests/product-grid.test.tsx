@@ -13,8 +13,8 @@ test("formatea precios enteros y con centavos en pesos argentinos", () => {
 test("renderiza las tarjetas y el estado inicial del carrito", () => {
   const html = renderToStaticMarkup(
     <ProductGrid products={[
-      { id: "1", name: "Torta", description: "De chocolate", price: 15000, imageUrl: "/file.svg" },
-      { id: "2", name: "Tarta", description: null, price: 15000.5, imageUrl: null },
+      { id: "1", name: "Torta", description: "De chocolate", price: 15000, imageUrl: "/file.svg", categoryId: "1", ingredients: null, servings: null },
+      { id: "2", name: "Tarta", description: null, price: 15000.5, imageUrl: null, categoryId: "2", ingredients: null, servings: null },
     ]} />,
   );
 
@@ -25,6 +25,7 @@ test("renderiza las tarjetas y el estado inicial del carrito", () => {
   assert.match(html, /Imagen no disponible/);
   assert.match(html, /Agregar Torta al carrito/);
   assert.match(html, /Agregar Tarta al carrito/);
+  assert.match(html, /Ver detalle de Torta/);
 });
 
 test("solo admite imágenes locales o de los orígenes configurados", () => {
@@ -33,4 +34,10 @@ test("solo admite imágenes locales o de los orígenes configurados", () => {
   assert.equal(isSupportedProductImage("//images.unsplash.com/photo-123"), false);
   assert.equal(isSupportedProductImage("https://example.com/photo-123"), false);
   assert.equal(isSupportedProductImage("not a url"), false);
+});
+
+test("muestra el estado vacío del catálogo", () => {
+  const html = renderToStaticMarkup(<ProductGrid products={[]} />);
+  assert.match(html, /Todavía no hay productos en el catálogo/);
+  assert.match(html, /Carrito: 0 productos/);
 });

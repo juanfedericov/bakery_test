@@ -2,11 +2,23 @@
 
 import { useState } from "react";
 import ProductCard, { type CatalogProduct, formatPrice } from "@/components/ProductCard";
+import ProductDetailModal from "@/components/ProductDetailModal";
 
-export default function ProductGrid({ products }: { products: CatalogProduct[] }) {
+export default function ProductGrid({
+  products,
+  selectedCategory = null,
+}: {
+  products: CatalogProduct[];
+  selectedCategory?: string | null;
+}) {
   const [quantities, setQuantities] = useState<Record<string, number>>({});
   const [announcement, setAnnouncement] = useState("");
+  const [selectedProduct, setSelectedProduct] = useState<CatalogProduct | null>(null);
+  const [notes, setNotes] = useState<Record<string, string>>({});
   const selectedProducts = products.filter((product) => quantities[product.id] > 0);
+  const visibleProducts = selectedCategory === null
+    ? products
+    : products.filter((product) => product.categoryId === selectedCategory);
   const count = selectedProducts.reduce((total, product) => total + quantities[product.id], 0);
 
   function addProduct(product: CatalogProduct) {
@@ -43,13 +55,35 @@ export default function ProductGrid({ products }: { products: CatalogProduct[] }
         )}
       </details>
       <p className="sr-only" role="status" aria-live="polite">{announcement}</p>
-      <ul className="product-list">
-        {products.map((product) => (
-          <li key={product.id}>
-            <ProductCard product={product} onAdd={() => addProduct(product)} />
-          </li>
-        ))}
-      </ul>
+      <div aria-live="polite" aria-atomic="true">
+        {visibleProducts.length === 0 ? (
+          <p className="catalog-message">
+            {selectedCategory === null
+              ? "Todavía no hay productos en el catálogo."
+              : "No hay productos en esta categoría."}
+          </p>
+        ) : (
+          <ul className="product-list">
+            {visibleProducts.map((product) => (
+              <li key={product.id}>
+                <ProductCard
+                  product={product}
+                  onAdd={() => addProduct(product)}
+                  onSelect={() => setSelectedProduct(product)}
+                />
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+      {selectedProduct && (
+        <ProductDetailModal
+          product={selectedProduct}
+          notes={notes[selectedProduct.id] ?? ""}
+          onNotesChange={(value) => setNotes((current) => ({ ...current, [selectedProduct.id]: value }))}
+          onClose={() => setSelectedProduct(null)}
+        />
+      )}
     </>
   );
 }
