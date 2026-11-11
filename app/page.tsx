@@ -1,4 +1,6 @@
 import { Prisma, PrismaClient } from "@prisma/client";
+import Catalog from "@/components/Catalog";
+import AboutSection from "@/components/AboutSection";
 import HeroSection from "@/components/HeroSection";
 import ProductGrid from "@/components/ProductGrid";
 import { isSupportedProductImage } from "@/lib/product-image";
@@ -17,38 +19,26 @@ async function ProductList() {
     return <p className="catalog-message">El catálogo no está disponible en este momento.</p>;
   }
 
+  let categories;
   let products;
   try {
-    products = await prisma.product.findMany({
-      select: { id: true, name: true, description: true, imageUrl: true, price: true },
-      orderBy: { name: "asc" },
-    });
+    [categories, products] = await Promise.all([
+      prisma.category.findMany({
+        select: { id: true, name: true },
+        orderBy: { name: "asc" },
+      }),
+      prisma.product.findMany({
+        select: { id: true, name: true, description: true, categoryId: true },
+        orderBy: { name: "asc" },
+      }),
+    ]);
   } catch (error) {
     if (!(error instanceof Prisma.PrismaClientInitializationError)) throw error;
     console.error("No se pudo conectar con el catálogo:", error);
     return <p className="catalog-message">El catálogo no está disponible en este momento.</p>;
   }
 
-  if (products.length === 0) {
-    return <p className="catalog-message">Todavía no hay productos en el catálogo.</p>;
-  }
-
-  return (
-    <ProductGrid
-      products={products.map((product) => {
-        const imageUrl = product.imageUrl;
-        const supportedImage = imageUrl && isSupportedProductImage(imageUrl);
-        if (imageUrl && !supportedImage) {
-          console.error(`La imagen del producto ${product.id} no tiene un origen admitido.`);
-        }
-        return {
-          ...product,
-          imageUrl: supportedImage ? imageUrl : null,
-          price: product.price.toNumber(),
-        };
-      })}
-    />
-  );
+  return <Catalog categories={categories} products={products} />;
 }
 
 export default function Home() {
@@ -63,6 +53,7 @@ export default function Home() {
           <ProductList />
         </div>
       </section>
+      <AboutSection />
     </main>
   );
 }
