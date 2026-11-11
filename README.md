@@ -54,6 +54,24 @@ La portada enlaza al catálogo de productos de la base de datos. Para visualizar
 productos, configura `DATABASE_URL`, aplica las migraciones y carga el seed como
 se describe arriba. Las imágenes de portada requieren conexión a Internet.
 
+### Después de un pull
+
+Si el pull trae cambios en las dependencias, actualiza `node_modules` antes de
+iniciar el servidor. Por ejemplo, si aparece `Can't resolve '@prisma/client'`:
+
+```bash
+npm ci
+npx prisma generate
+npm run dev
+```
+
+`npm ci` reinstala las dependencias según `package-lock.json`; el comando
+`prisma generate` también actualiza el cliente si cambió el esquema de Prisma.
+Si hay migraciones nuevas, configura `DATABASE_URL` y aplica las migraciones
+con `npx prisma migrate deploy` antes de consultar el catálogo.
+
+La página principal está en `/`; `/bakery` no es una ruta de esta aplicación.
+
 ## Estructura
 
 - `app/`: rutas y estilos globales del App Router.
