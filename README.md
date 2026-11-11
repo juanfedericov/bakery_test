@@ -53,6 +53,9 @@ Abre [http://localhost:3000](http://localhost:3000) para ver la página inicial.
 La portada enlaza al catálogo de productos de la base de datos. Para visualizar
 productos, configura `DATABASE_URL`, aplica las migraciones y carga el seed como
 se describe arriba. Las imágenes de portada requieren conexión a Internet.
+En el catálogo, selecciona una categoría cargada en la base de datos para ver
+solo sus productos; selecciona «Todos» para volver a mostrar el catálogo completo.
+Las categorías sin productos muestran un mensaje indicándolo.
 
 ### Después de un pull
 
