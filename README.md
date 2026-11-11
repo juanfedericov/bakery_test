@@ -30,6 +30,11 @@ Carga el catálogo de prueba después de aplicar las migraciones:
 npx prisma db seed
 ```
 
+El comando genera primero el cliente de Prisma a partir del esquema actual.
+Esto evita errores como `Unknown argument ingredients` cuando el cliente quedó
+desactualizado. Generar el cliente no actualiza la base de datos: después de
+un cambio de esquema, aplica también las migraciones antes de cargar el seed.
+
 El seed crea tres categorías y once productos con sabor, precio e imagen de
 ejemplo. Puede ejecutarse varias veces: reutiliza las categorías existentes y
 restablece los datos de sus productos de prueba sin duplicarlos. Las imágenes
@@ -83,7 +88,7 @@ npm run dev
 `npm ci` reinstala las dependencias según `package-lock.json`; el comando
 `prisma generate` también actualiza el cliente si cambió el esquema de Prisma.
 Si hay migraciones nuevas, configura `DATABASE_URL` y aplica las migraciones
-con `npx prisma migrate deploy` antes de consultar el catálogo.
+con `npx prisma migrate deploy` antes de cargar el seed o consultar el catálogo.
 
 La página principal está en `/`; `/bakery` no es una ruta de esta aplicación.
 
