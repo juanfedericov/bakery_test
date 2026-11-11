@@ -30,10 +30,15 @@ Carga el catálogo de prueba después de aplicar las migraciones:
 npx prisma db seed
 ```
 
-El seed crea tres categorías y diez productos con sabor, precio e imagen de
+El seed crea tres categorías y once productos con sabor, precio e imagen de
 ejemplo. Puede ejecutarse varias veces: reutiliza las categorías existentes y
 restablece los datos de sus productos de prueba sin duplicarlos. Las imágenes
 son enlaces externos y requieren conexión a Internet.
+
+Las tarjetas del catálogo abren el detalle de cada producto. La Torta Rogel
+incluye ingredientes y porciones de ejemplo; los productos sin esos datos
+indican que no están disponibles. Las notas opcionales se conservan mientras
+la página permanezca abierta, pero todavía no se envían ni guardan en un pedido.
 
 El esquema contiene categorías, productos y pedidos. Cada producto pertenece a
 una categoría; cada línea de pedido registra el producto, la cantidad y el

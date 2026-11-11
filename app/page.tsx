@@ -1,5 +1,6 @@
 import { Prisma, PrismaClient } from "@prisma/client";
 import HeroSection from "@/components/HeroSection";
+import ProductCatalog from "@/components/ProductCatalog";
 
 export const dynamic = "force-dynamic";
 
@@ -18,7 +19,7 @@ async function ProductList() {
   let products;
   try {
     products = await prisma.product.findMany({
-      select: { id: true, name: true, description: true },
+      select: { id: true, name: true, description: true, ingredients: true, servings: true },
       orderBy: { name: "asc" },
     });
   } catch (error) {
@@ -31,16 +32,7 @@ async function ProductList() {
     return <p className="catalog-message">Todavía no hay productos en el catálogo.</p>;
   }
 
-  return (
-    <ul className="product-list">
-      {products.map((product) => (
-        <li key={product.id} className="product-card">
-          <h3>{product.name}</h3>
-          {product.description && <p>{product.description}</p>}
-        </li>
-      ))}
-    </ul>
-  );
+  return <ProductCatalog products={products} />;
 }
 
 export default function Home() {

@@ -19,6 +19,8 @@ model Product {
   id          String      @id @default(cuid())
   name        String
   description String?
+  ingredients String?
+  servings    String?
   flavor      String?
   imageUrl    String?
   price       Decimal     @db.Decimal(10, 2)
