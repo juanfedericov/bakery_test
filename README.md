@@ -24,6 +24,17 @@ Después de instalar las dependencias, crea las tablas y genera el cliente:
 npx prisma migrate dev
 ```
 
+Carga el catálogo de prueba después de aplicar las migraciones:
+
+```bash
+npx prisma db seed
+```
+
+El seed crea tres categorías y diez productos con sabor, precio e imagen de
+ejemplo. Puede ejecutarse varias veces: reutiliza las categorías existentes y
+restablece los datos de sus productos de prueba sin duplicarlos. Las imágenes
+son enlaces externos y requieren conexión a Internet.
+
 El esquema contiene categorías, productos y pedidos. Cada producto pertenece a
 una categoría; cada línea de pedido registra el producto, la cantidad y el
 precio unitario de ese pedido. Los importes se almacenan como decimales para
