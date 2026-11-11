@@ -6,7 +6,7 @@ export function isSupportedProductImage(url: string) {
     return parsed.protocol === "https:" &&
       parsed.hostname === "images.unsplash.com" &&
       parsed.port === "" &&
-      parsed.pathname.startsWith("/photo-");
+      /^\/photo-[^/]*$/.test(parsed.pathname);
   } catch {
     return false;
   }
