@@ -26,7 +26,7 @@ a:focus-visible { outline: 3px solid #a64e4b; outline-offset: 5px; }
 .hero-copy { max-width: 580px; }
 .eyebrow { color: var(--rose); font-size: 11px; font-weight: 700; letter-spacing: .19em; text-transform: uppercase; }
 .eyebrow span { font-size: 18px; margin-right: 8px; }
-.hero h1, .catalog-section h2 { font-family: Georgia, "Times New Roman", serif; font-weight: 400; letter-spacing: -.045em; }
+.hero h1, .catalog-section h2, .about-section h2 { font-family: Georgia, "Times New Roman", serif; font-weight: 400; letter-spacing: -.045em; }
 .hero h1 { margin: 24px 0; font-size: clamp(52px, 5.5vw, 80px); line-height: 1.04; }
 .hero h1 em { color: var(--rose); font-weight: 400; }
 .hero-description { max-width: 400px; color: var(--muted); font-size: 16px; line-height: 1.8; }
@@ -53,6 +53,17 @@ a:focus-visible { outline: 3px solid #a64e4b; outline-offset: 5px; }
 .product-card { border: 1px solid #e7d8cb; background: #fffaf5; padding: 24px; }
 .product-card h3 { font-family: Georgia, serif; font-size: 22px; }
 .product-card p { margin-top: 10px; color: var(--muted); font-size: 14px; line-height: 1.6; }
+.about-section { scroll-margin-top: 20px; padding: 100px 7% 120px; background: #f8f0e6; }
+.about-inner { max-width: 1238px; margin: auto; }
+.about-heading { max-width: 620px; }
+.about-section h2 { margin: 14px 0; font-size: clamp(40px, 4vw, 58px); line-height: 1.1; }
+.about-heading > p:last-child { color: var(--muted); line-height: 1.7; }
+.about-features { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-top: 48px; }
+.about-feature { padding: 32px; border: 1px solid #e7d8cb; background: #fffaf5; }
+.about-icon { display: grid; width: 52px; height: 52px; place-items: center; border-radius: 50%; background: #f8f0e6; color: var(--rose); }
+.about-icon svg { width: 26px; height: 26px; }
+.about-feature h3 { margin-top: 24px; font-family: Georgia, serif; font-size: 23px; font-weight: 400; }
+.about-feature p { margin-top: 12px; color: var(--muted); font-size: 14px; line-height: 1.7; }
 
 @media (max-width: 700px) {
   .hero-inner { padding: 0 6%; }
@@ -72,6 +83,9 @@ a:focus-visible { outline: 3px solid #a64e4b; outline-offset: 5px; }
   .hero-bottom span:last-child { text-align: right; }
   .catalog-section { padding: 75px 6% 90px; }
   .product-list { grid-template-columns: 1fr; }
+  .about-section { padding: 75px 6% 90px; }
+  .about-features { grid-template-columns: 1fr; margin-top: 32px; }
+  .about-feature { padding: 28px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
