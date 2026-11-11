@@ -54,6 +54,13 @@ La portada enlaza al catálogo de productos de la base de datos. Para visualizar
 productos, configura `DATABASE_URL`, aplica las migraciones y carga el seed como
 se describe arriba. Las imágenes de portada requieren conexión a Internet.
 
+El catálogo muestra los precios en pesos argentinos y permite agregar o quitar
+productos del carrito durante la visita. El carrito se mantiene solo en memoria:
+se vacía al recargar la página y todavía no permite finalizar pedidos. Las
+imágenes de productos pueden ser rutas locales de `public/` o enlaces HTTPS a
+`images.unsplash.com/photo-*`; las demás se muestran sin foto hasta configurar
+su origen en Next.js y actualizar la validación del catálogo.
+
 ### Después de un pull
 
 Si el pull trae cambios en las dependencias, actualiza `node_modules` antes de
@@ -85,5 +92,6 @@ Tailwind CSS se importa en `app/globals.css` y se integra con Turbopack mediante
 
 ```bash
 npm run lint
+npm test
 npm run build
 ```

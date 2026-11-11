@@ -1,5 +1,7 @@
 import { Prisma, PrismaClient } from "@prisma/client";
 import HeroSection from "@/components/HeroSection";
+import ProductGrid from "@/components/ProductGrid";
+import { isSupportedProductImage } from "@/lib/product-image";
 
 export const dynamic = "force-dynamic";
 
@@ -18,7 +20,7 @@ async function ProductList() {
   let products;
   try {
     products = await prisma.product.findMany({
-      select: { id: true, name: true, description: true },
+      select: { id: true, name: true, description: true, imageUrl: true, price: true },
       orderBy: { name: "asc" },
     });
   } catch (error) {
@@ -32,14 +34,20 @@ async function ProductList() {
   }
 
   return (
-    <ul className="product-list">
-      {products.map((product) => (
-        <li key={product.id} className="product-card">
-          <h3>{product.name}</h3>
-          {product.description && <p>{product.description}</p>}
-        </li>
-      ))}
-    </ul>
+    <ProductGrid
+      products={products.map((product) => {
+        const imageUrl = product.imageUrl;
+        const supportedImage = imageUrl && isSupportedProductImage(imageUrl);
+        if (imageUrl && !supportedImage) {
+          console.error(`La imagen del producto ${product.id} no tiene un origen admitido.`);
+        }
+        return {
+          ...product,
+          imageUrl: supportedImage ? imageUrl : null,
+          price: product.price.toNumber(),
+        };
+      })}
+    />
   );
 }
 
