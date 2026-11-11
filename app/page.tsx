@@ -2,7 +2,6 @@ import { Prisma, PrismaClient } from "@prisma/client";
 import Catalog from "@/components/Catalog";
 import AboutSection from "@/components/AboutSection";
 import HeroSection from "@/components/HeroSection";
-import ProductGrid from "@/components/ProductGrid";
 import { isSupportedProductImage } from "@/lib/product-image";
 
 export const dynamic = "force-dynamic";
@@ -28,7 +27,10 @@ async function ProductList() {
         orderBy: { name: "asc" },
       }),
       prisma.product.findMany({
-        select: { id: true, name: true, description: true, categoryId: true },
+        select: {
+          id: true, name: true, description: true, categoryId: true,
+          imageUrl: true, price: true, ingredients: true, servings: true,
+        },
         orderBy: { name: "asc" },
       }),
     ]);
@@ -38,7 +40,23 @@ async function ProductList() {
     return <p className="catalog-message">El catálogo no está disponible en este momento.</p>;
   }
 
-  return <Catalog categories={categories} products={products} />;
+  return (
+    <Catalog
+      categories={categories}
+      products={products.map((product) => {
+        const imageUrl = product.imageUrl;
+        const supportedImage = imageUrl && isSupportedProductImage(imageUrl);
+        if (imageUrl && !supportedImage) {
+          console.error(`La imagen del producto ${product.id} no tiene un origen admitido.`);
+        }
+        return {
+          ...product,
+          imageUrl: supportedImage ? imageUrl : null,
+          price: product.price.toNumber(),
+        };
+      })}
+    />
+  );
 }
 
 export default function Home() {

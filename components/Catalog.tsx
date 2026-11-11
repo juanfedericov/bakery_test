@@ -1,26 +1,19 @@
 "use client";
 
 import { useState } from "react";
+import ProductGrid from "./ProductGrid";
+import type { CatalogProduct } from "./ProductCard";
 
 type Category = { id: string; name: string };
-type Product = {
-  id: string;
-  name: string;
-  description: string | null;
-  categoryId: string;
-};
 
 export default function Catalog({
   categories,
   products,
 }: {
   categories: Category[];
-  products: Product[];
+  products: CatalogProduct[];
 }) {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const visibleProducts = selectedCategory === null
-    ? products
-    : products.filter((product) => product.categoryId === selectedCategory);
 
   return (
     <>
@@ -47,24 +40,7 @@ export default function Catalog({
           ))}
         </div>
       )}
-      <div aria-live="polite" aria-atomic="true">
-        {visibleProducts.length === 0 ? (
-          <p className="catalog-message">
-            {selectedCategory === null
-              ? "Todavía no hay productos en el catálogo."
-              : "No hay productos en esta categoría."}
-          </p>
-        ) : (
-          <ul className="product-list">
-            {visibleProducts.map((product) => (
-              <li key={product.id} className="product-card">
-                <h3>{product.name}</h3>
-                {product.description && <p>{product.description}</p>}
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
+      <ProductGrid products={products} selectedCategory={selectedCategory} />
     </>
   );
 }
