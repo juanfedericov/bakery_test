@@ -1,4 +1,5 @@
 import { Prisma, PrismaClient } from "@prisma/client";
+import Catalog from "@/components/Catalog";
 import AboutSection from "@/components/AboutSection";
 import HeroSection from "@/components/HeroSection";
 
@@ -16,32 +17,26 @@ async function ProductList() {
     return <p className="catalog-message">El catálogo no está disponible en este momento.</p>;
   }
 
+  let categories;
   let products;
   try {
-    products = await prisma.product.findMany({
-      select: { id: true, name: true, description: true },
-      orderBy: { name: "asc" },
-    });
+    [categories, products] = await Promise.all([
+      prisma.category.findMany({
+        select: { id: true, name: true },
+        orderBy: { name: "asc" },
+      }),
+      prisma.product.findMany({
+        select: { id: true, name: true, description: true, categoryId: true },
+        orderBy: { name: "asc" },
+      }),
+    ]);
   } catch (error) {
     if (!(error instanceof Prisma.PrismaClientInitializationError)) throw error;
     console.error("No se pudo conectar con el catálogo:", error);
     return <p className="catalog-message">El catálogo no está disponible en este momento.</p>;
   }
 
-  if (products.length === 0) {
-    return <p className="catalog-message">Todavía no hay productos en el catálogo.</p>;
-  }
-
-  return (
-    <ul className="product-list">
-      {products.map((product) => (
-        <li key={product.id} className="product-card">
-          <h3>{product.name}</h3>
-          {product.description && <p>{product.description}</p>}
-        </li>
-      ))}
-    </ul>
-  );
+  return <Catalog categories={categories} products={products} />;
 }
 
 export default function Home() {
