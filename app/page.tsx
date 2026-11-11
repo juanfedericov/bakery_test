@@ -2,6 +2,8 @@ import { Prisma, PrismaClient } from "@prisma/client";
 import Catalog from "@/components/Catalog";
 import AboutSection from "@/components/AboutSection";
 import HeroSection from "@/components/HeroSection";
+import ProductGrid from "@/components/ProductGrid";
+import { isSupportedProductImage } from "@/lib/product-image";
 
 export const dynamic = "force-dynamic";
 
