@@ -58,6 +58,7 @@ export default function ProductGrid({
             ))}
           </ul>
         )}
+        <p>Total: {formatPrice(total)}</p>
       </details>
       <div aria-live="polite" aria-atomic="true">
         {visibleProducts.length === 0 ? (
@@ -72,7 +73,7 @@ export default function ProductGrid({
               <li key={product.id}>
                 <ProductCard
                   product={product}
-                  onAdd={() => addProduct(product)}
+                  onAdd={() => handleAddProduct(product)}
                   onSelect={() => setSelectedProduct(product)}
                 />
               </li>
