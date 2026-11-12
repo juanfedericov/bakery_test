@@ -3,6 +3,7 @@
 import { useState } from "react";
 import ProductCard, { type CatalogProduct, formatPrice } from "@/components/ProductCard";
 import ProductDetailModal from "@/components/ProductDetailModal";
+import { useCartStore } from "@/lib/useCartStore";
 
 export default function ProductGrid({
   products,
@@ -11,27 +12,21 @@ export default function ProductGrid({
   products: CatalogProduct[];
   selectedCategory?: string | null;
 }) {
-  const [quantities, setQuantities] = useState<Record<string, number>>({});
+  const { items, quantities, count, total, addProduct, removeProduct } = useCartStore(products);
   const [announcement, setAnnouncement] = useState("");
   const [selectedProduct, setSelectedProduct] = useState<CatalogProduct | null>(null);
   const [notes, setNotes] = useState<Record<string, string>>({});
-  const selectedProducts = products.filter((product) => quantities[product.id] > 0);
   const visibleProducts = selectedCategory === null
     ? products
     : products.filter((product) => product.categoryId === selectedCategory);
-  const count = selectedProducts.reduce((total, product) => total + quantities[product.id], 0);
 
-  function addProduct(product: CatalogProduct) {
-    setQuantities((current) => ({ ...current, [product.id]: (current[product.id] ?? 0) + 1 }));
+  function handleAddProduct(product: CatalogProduct) {
+    addProduct(product);
     setAnnouncement(`${product.name} agregado al carrito. Cantidad: ${(quantities[product.id] ?? 0) + 1}.`);
   }
 
-  function removeProduct(product: CatalogProduct) {
-    setQuantities((current) => {
-      const next = { ...current };
-      delete next[product.id];
-      return next;
-    });
+  function handleRemoveProduct(product: CatalogProduct) {
+    removeProduct(product);
     setAnnouncement(`${product.name} eliminado del carrito.`);
   }
 
@@ -39,20 +34,21 @@ export default function ProductGrid({
     <>
       <details className="cart-summary">
         <summary>Carrito: {count} {count === 1 ? "producto" : "productos"}</summary>
-        {selectedProducts.length === 0 ? (
+        {items.length === 0 ? (
           <p>Tu carrito está vacío.</p>
         ) : (
           <ul>
-            {selectedProducts.map((product) => (
+            {items.map(({ product, quantity, subtotalInCents }) => (
               <li key={product.id}>
-                <span>{product.name} × {quantities[product.id]} — {formatPrice(product.price)}</span>
-                <button type="button" onClick={() => removeProduct(product)}>
+                <span>{product.name} × {quantity} — {formatPrice(product.price)} c/u — Subtotal: {formatPrice(subtotalInCents / 100)}</span>
+                <button type="button" onClick={() => handleRemoveProduct(product)}>
                   Quitar <span className="sr-only">{product.name}</span>
                 </button>
               </li>
             ))}
           </ul>
         )}
+        <p>Total: {formatPrice(total)}</p>
       </details>
       <p className="sr-only" role="status" aria-live="polite">{announcement}</p>
       <div aria-live="polite" aria-atomic="true">
@@ -68,7 +64,7 @@ export default function ProductGrid({
               <li key={product.id}>
                 <ProductCard
                   product={product}
-                  onAdd={() => addProduct(product)}
+                  onAdd={() => handleAddProduct(product)}
                   onSelect={() => setSelectedProduct(product)}
                 />
               </li>

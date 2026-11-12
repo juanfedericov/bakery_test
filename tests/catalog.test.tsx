@@ -49,7 +49,13 @@ test("integra filtros, tarjetas, carrito y detalle con notas independientes", as
     await act(async () => root.render(
       <Catalog
         categories={[{ id: "tortas", name: "Tortas" }, { id: "tartas", name: "Tartas" }, { id: "vacia", name: "Vacía" }]}
-        products={[product, { ...product, id: "tarta", name: "Tarta", categoryId: "tartas", ingredients: null, servings: null, imageUrl: null }]}
+        products={[
+          product,
+          { ...product, id: "tarta", name: "Tarta", categoryId: "tartas", ingredients: null, servings: null, imageUrl: null },
+          { ...product, id: "marquise", name: "Torta Marquise", price: 10000 },
+          { ...product, id: "frutilla", name: "Tarta de Frutilla", categoryId: "tartas", price: 8000 },
+          { ...product, id: "decimal", name: "Mini Tarta", price: 0.1 },
+        ]}
       />,
     ));
 
@@ -97,6 +103,28 @@ test("integra filtros, tarjetas, carrito y detalle con notas independientes", as
     await click('button[aria-label="Cerrar detalle"]');
     await click(".cart-summary button");
     assert.match(container.textContent!, /Carrito: 0 productos/);
+    const cartText = () => container.querySelector(".cart-summary")!.textContent!.replace(/\s/g, "");
+    assert.match(cartText(), /Total:\$0/);
+
+    await click('button[aria-label="Agregar Torta Marquise al carrito"]');
+    await click('button[aria-label="Agregar Torta Marquise al carrito"]');
+    await filter("Tartas");
+    await click('button[aria-label="Agregar Tarta de Frutilla al carrito"]');
+    assert.match(cartText(), /TortaMarquise×2.*Subtotal:\$20\.000/);
+    assert.match(cartText(), /TartadeFrutilla×1.*Subtotal:\$8\.000/);
+    assert.match(cartText(), /Total:\$28\.000/);
+    await click('.cart-summary button:has(.sr-only)');
+    assert.match(cartText(), /Total:\$8\.000/);
+    assert.doesNotMatch(cartText(), /TortaMarquise/);
+    await click(".cart-summary button");
+    assert.match(cartText(), /Total:\$0/);
+
+    await filter("Tortas");
+    await click('button[aria-label="Agregar Mini Tarta al carrito"]');
+    await click('button[aria-label="Agregar Mini Tarta al carrito"]');
+    await click('button[aria-label="Agregar Mini Tarta al carrito"]');
+    assert.match(cartText(), /Subtotal:\$0,30/);
+    assert.match(cartText(), /Total:\$0,30/);
   } finally {
     await act(async () => root.unmount());
     dom.window.close();
