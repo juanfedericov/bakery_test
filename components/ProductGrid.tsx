@@ -28,6 +28,7 @@ export default function ProductGrid({
     ? products
     : products.filter((product) => product.categoryId === selectedCategory);
   const count = items.reduce((total, item) => total + item.quantity, 0);
+  const total = items.reduce((sum, item) => sum + Math.round(item.product.price * 100) * item.quantity, 0) / 100;
 
   function addProduct(product: CatalogProduct) {
     addToCart(product);
@@ -73,7 +74,7 @@ export default function ProductGrid({
               <li key={product.id}>
                 <ProductCard
                   product={product}
-                  onAdd={() => handleAddProduct(product)}
+                  onAdd={() => addProduct(product)}
                   onSelect={() => setSelectedProduct(product)}
                 />
               </li>

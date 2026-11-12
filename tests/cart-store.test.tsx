@@ -13,7 +13,7 @@ test("recupera y actualiza productos y cantidades guardados sin errores de hidra
     description: null, ingredients: null, servings: null,
     imageUrl: null, price: 15000,
   };
-  const other = { ...product, id: "tarta", name: "Tarta" };
+  const other = { ...product, id: "tarta", name: "Tarta", price: 100.25 };
   const html = renderToString(
     <CartProvider><ProductGrid products={[product, other]} /></CartProvider>,
   );
@@ -53,11 +53,13 @@ test("recupera y actualiza productos y cantidades guardados sin errores de hidra
     assert.match(container.textContent!, /Carrito: 3 productos/);
     assert.match(container.textContent!, /Torta Rogel × 2/);
     assert.match(container.textContent!, /Tarta × 1/);
+    assert.match(container.querySelector(".cart-summary")!.textContent!.replace(/\s/g, ""), /Total:\$30\.100,25/);
 
     await act(async () => {
       container.querySelector<HTMLButtonElement>('button[aria-label="Agregar Torta Rogel al carrito"]')!.click();
     });
     assert.match(container.textContent!, /Carrito: 4 productos/);
+    assert.match(container.querySelector(".cart-summary")!.textContent!.replace(/\s/g, ""), /Total:\$45\.100,25/);
     const saved = dom.window.localStorage.getItem("bakery-cart")!;
     assert.deepEqual(JSON.parse(saved).state.items, [
       { product, quantity: 3 },
@@ -75,6 +77,7 @@ test("recupera y actualiza productos y cantidades guardados sin errores de hidra
       container.querySelector<HTMLButtonElement>(".cart-summary button")!.click();
     });
     assert.match(container.textContent!, /Carrito: 1 producto/);
+    assert.match(container.querySelector(".cart-summary")!.textContent!.replace(/\s/g, ""), /Total:\$100,25/);
     assert.deepEqual(JSON.parse(dom.window.localStorage.getItem("bakery-cart")!).state.items, [
       { product: other, quantity: 1 },
     ]);
