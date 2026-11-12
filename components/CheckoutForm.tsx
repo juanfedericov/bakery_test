@@ -57,7 +57,6 @@ export default function CheckoutForm({ whatsappNumber }: { whatsappNumber: strin
           date: `${day}/${month}/${year}`,
           time,
           items: cart.items,
-          dedication: cart.cakeDedication,
         });
 
         const whatsappUrl = new URL(`https://wa.me/${targetWhatsAppNumber}`);
