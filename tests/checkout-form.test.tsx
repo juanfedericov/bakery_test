@@ -97,21 +97,21 @@ test("valida el checkout, abre WhatsApp con el pedido y vacía el carrito persis
     assert.equal(calls[1].target, "_blank");
     const url = new URL(calls[1].url);
     assert.equal(url.origin + url.pathname, "https://wa.me/5491166778899");
-    assert.match(calls[1].url, /%F0%9F%8E%82/);
+    assert.match(calls[1].url, /%E2%80%A2/);
     assert.match(calls[1].url, /%0A/);
     assert.doesNotMatch(calls[1].url, /FÁBRICA/);
     assert.equal(url.searchParams.get("text"), [
-      "🎂 *NUEVO PEDIDO - FÁBRICA DE TORTAS*",
-      "👤 *Cliente:* Ana & José",
-      "📞 *Teléfono:* 123456789",
-      "🚚 *Entrega:* Envío: Calle #123",
-      "📅 *Fecha:* 20/12/2026 - 14:30 hs",
+      "*NUEVO PEDIDO - FÁBRICA DE TORTAS*",
+      "*Cliente:* Ana & José",
+      "*Teléfono:* 123456789",
+      "*Entrega:* Envío: Calle #123",
+      "*Fecha:* 20/12/2026 - 14:30 hs",
       "",
-      "📋 *Detalle del Pedido:*",
+      "*Detalle del Pedido:*",
       "• 2x Torta + crema ($100,25)",
       "",
-      "✍️ *Dedicatoria:* \"Feliz día & más\"",
-      "💰 *TOTAL:* $200,50",
+      "*Dedicatoria:* \"Feliz día & más\"",
+      "*TOTAL:* $200,50",
     ].join("\n"));
     assert.equal(opened.opener, null);
     assert.deepEqual(useCartStore.getState().items, []);
@@ -132,7 +132,7 @@ test("valida el checkout, abre WhatsApp con el pedido y vacía el carrito persis
     assert.equal(form.querySelector('[name="address"]'), null);
     await act(async () => button.click());
     const pickupMessage = new URL(calls[2].url).searchParams.get("text")!;
-    assert.match(pickupMessage, /🚚 \*Entrega:\* Retiro en local/);
+    assert.match(pickupMessage, /\*Entrega:\* Retiro en local/);
     assert.doesNotMatch(pickupMessage, /Dedicatoria|Calle #123/);
     assert.deepEqual(JSON.parse(dom.window.localStorage.getItem("bakery-cart")!).state.items, []);
   } finally {
