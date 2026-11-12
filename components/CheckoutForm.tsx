@@ -4,13 +4,13 @@ import { useEffect, useState } from "react";
 import { buildWhatsAppUrl } from "@/lib/buildWhatsAppUrl";
 import { useCartStore } from "@/lib/store/useCartStore";
 
-const FACTORY_WHATSAPP_NUMBER = "5491112345678";
-
 export default function CheckoutForm({ whatsappNumber }: { whatsappNumber: string }) {
   const [deliveryMethod, setDeliveryMethod] = useState("");
   const [cartReady, setCartReady] = useState(false);
   const [message, setMessage] = useState("");
   const items = useCartStore((state) => state.items);
+  const targetWhatsAppNumber = whatsappNumber.trim();
+  const isWhatsAppNumberConfigured = /^\d+$/.test(targetWhatsAppNumber);
 
   useEffect(() => {
     let active = true;
@@ -34,6 +34,10 @@ export default function CheckoutForm({ whatsappNumber }: { whatsappNumber: strin
       className="checkout-form"
       onSubmit={(event) => {
         event.preventDefault();
+        if (!isWhatsAppNumberConfigured) {
+          setMessage("El número de WhatsApp no está configurado correctamente.");
+          return;
+        }
         const cart = useCartStore.getState();
         if (!cartReady || cart.items.length === 0) {
           setMessage("Agregá productos al carrito antes de enviar el pedido.");
@@ -56,7 +60,7 @@ export default function CheckoutForm({ whatsappNumber }: { whatsappNumber: strin
           dedication: cart.cakeDedication,
         });
 
-        const opened = window.open(`https://wa.me/${FACTORY_WHATSAPP_NUMBER}?text=${text}`, "_blank");
+        const opened = window.open(`https://wa.me/${targetWhatsAppNumber}?text=${text}`, "_blank");
         if (!opened) {
           setMessage("No se pudo abrir WhatsApp. Permití las ventanas emergentes y volvé a intentar.");
           return;
@@ -93,9 +97,9 @@ export default function CheckoutForm({ whatsappNumber }: { whatsappNumber: strin
         <label htmlFor="checkout-datetime">Fecha y hora estimada de entrega</label>
         <input id="checkout-datetime" name="deliveryDateTime" type="datetime-local" required />
       </div>
-      <button type="submit" className="checkout-submit" disabled={!cartReady || items.length === 0}>Confirmar y Enviar Pedido por WhatsApp</button>
+      <button type="submit" className="checkout-submit" disabled={!isWhatsAppNumberConfigured || !cartReady || items.length === 0}>Confirmar y Enviar Pedido por WhatsApp</button>
       <p className="checkout-note" role="status">
-        {message || (cartReady && items.length === 0 ? "Tu carrito está vacío. Agregá productos antes de enviar el pedido." : "")}
+        {message || (!isWhatsAppNumberConfigured ? "El número de WhatsApp no está configurado." : cartReady && items.length === 0 ? "Tu carrito está vacío. Agregá productos antes de enviar el pedido." : "")}
       </p>
     </form>
   );
