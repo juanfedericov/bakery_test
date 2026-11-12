@@ -1,18 +1,69 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { buildWhatsAppUrl } from "@/lib/buildWhatsAppUrl";
+import { useCartStore } from "@/lib/store/useCartStore";
+
+const FACTORY_WHATSAPP_NUMBER = "5491112345678";
 
 export default function CheckoutForm() {
   const [deliveryMethod, setDeliveryMethod] = useState("");
-  const [validated, setValidated] = useState(false);
+  const [cartReady, setCartReady] = useState(false);
+  const [message, setMessage] = useState("");
+  const items = useCartStore((state) => state.items);
+
+  useEffect(() => {
+    let active = true;
+    async function recoverCart() {
+      try {
+        if (!useCartStore.persist.hasHydrated()) await useCartStore.persist.rehydrate();
+        if (!active) return;
+        if (useCartStore.persist.hasHydrated()) setCartReady(true);
+        else setMessage("No se pudo recuperar el carrito. Recargá la página para volver a intentar.");
+      } catch (error) {
+        console.error("No se pudo recuperar el carrito guardado.", error);
+        if (active) setMessage("No se pudo recuperar el carrito. Recargá la página para volver a intentar.");
+      }
+    }
+    void recoverCart();
+    return () => { active = false; };
+  }, []);
 
   return (
     <form
       className="checkout-form"
-      onChange={() => setValidated(false)}
       onSubmit={(event) => {
         event.preventDefault();
-        setValidated(true);
+        const cart = useCartStore.getState();
+        if (!cartReady || cart.items.length === 0) {
+          setMessage("Agregá productos al carrito antes de enviar el pedido.");
+          return;
+        }
+
+        const data = new FormData(event.currentTarget);
+        const [date, time] = String(data.get("deliveryDateTime")).split("T");
+        const [year, month, day] = date.split("-");
+        const delivery = deliveryMethod === "delivery"
+          ? `Envío: ${String(data.get("address")).trim()}`
+          : "Retiro en local";
+        const text = buildWhatsAppUrl({
+          customerName: String(data.get("name")).trim(),
+          phone: String(data.get("phone")).trim(),
+          delivery,
+          date: `${day}/${month}/${year}`,
+          time,
+          items: cart.items,
+          dedication: cart.cakeDedication,
+        });
+
+        const opened = window.open(`https://wa.me/${FACTORY_WHATSAPP_NUMBER}?text=${text}`, "_blank");
+        if (!opened) {
+          setMessage("No se pudo abrir WhatsApp. Permití las ventanas emergentes y volvé a intentar.");
+          return;
+        }
+        opened.opener = null;
+        cart.clearCart();
+        setMessage("WhatsApp se abrió en otra pestaña. Revisá y enviá el mensaje para confirmar tu pedido.");
       }}
     >
       <p className="checkout-required">Todos los campos son obligatorios.</p>
@@ -42,11 +93,9 @@ export default function CheckoutForm() {
         <label htmlFor="checkout-datetime">Fecha y hora estimada de entrega</label>
         <input id="checkout-datetime" name="deliveryDateTime" type="datetime-local" required />
       </div>
-      <button type="submit" className="checkout-submit">Validar datos</button>
+      <button type="submit" className="checkout-submit" disabled={!cartReady || items.length === 0}>Confirmar y Enviar Pedido por WhatsApp</button>
       <p className="checkout-note" role="status">
-        {validated
-          ? "Los datos están completos, pero todavía no se guardan ni se envía el pedido."
-          : "Completar este formulario todavía no envía ni guarda el pedido."}
+        {message || (cartReady && items.length === 0 ? "Tu carrito está vacío. Agregá productos antes de enviar el pedido." : "")}
       </p>
     </form>
   );
