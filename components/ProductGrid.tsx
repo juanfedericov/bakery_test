@@ -60,6 +60,7 @@ export default function ProductGrid({
           </ul>
         )}
         <p>Total: {formatPrice(total)}</p>
+        {items.length > 0 && <a className="cart-summary-checkout" href="/checkout">Ir al checkout</a>}
       </details>
       <div aria-live="polite" aria-atomic="true">
         {visibleProducts.length === 0 ? (

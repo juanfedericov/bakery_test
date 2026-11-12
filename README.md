@@ -73,7 +73,10 @@ carrito ni las notas de los productos. Para abrir el detalle, selecciona la
 imagen o información de una tarjeta; el botón «Agregar al Carrito» no abre el
 modal. El carrito y las cantidades se guardan en el almacenamiento local del
 navegador y se recuperan al recargar la página; todavía no permite finalizar
-pedidos. Las notas no se guardan al recargar. Las compras actualizan el
+pedidos. Desde el carrito se puede acceder a `/checkout` para completar y
+validar nombre, teléfono, método de entrega y fecha y hora estimada; para
+envíos también se requiere una dirección. Estos datos todavía no se guardan
+ni se envía el pedido. Las notas no se guardan al recargar. Las compras actualizan el
 contador del encabezado y muestran una confirmación temporal; el enlace del
 encabezado lleva al resumen del carrito. Las
 imágenes de productos pueden ser rutas locales de `public/` o enlaces HTTPS a
