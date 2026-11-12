@@ -55,7 +55,10 @@ test("valida el checkout, abre WhatsApp con el pedido y vacía el carrito persis
     await act(async () => root.render(<CheckoutForm whatsappNumber="" />));
     assert.equal(container.querySelector<HTMLButtonElement>('[type="submit"]')!.disabled, true);
     assert.match(container.textContent!, /no está configurado/);
-    await act(async () => root.render(<CheckoutForm whatsappNumber="5491112345678" />));
+    await act(async () => root.render(<CheckoutForm whatsappNumber="+5491112345678" />));
+    assert.equal(container.querySelector<HTMLButtonElement>('[type="submit"]')!.disabled, true);
+    assert.match(container.textContent!, /no está configurado/);
+    await act(async () => root.render(<CheckoutForm whatsappNumber="5491166778899" />));
     const form = container.querySelector("form")!;
     const button = form.querySelector<HTMLButtonElement>('button[type="submit"]')!;
     const name = form.querySelector<HTMLInputElement>('[name="name"]')!;
@@ -93,7 +96,7 @@ test("valida el checkout, abre WhatsApp con el pedido y vacía el carrito persis
     await act(async () => button.click());
     assert.equal(calls[1].target, "_blank");
     const url = new URL(calls[1].url);
-    assert.equal(url.origin + url.pathname, "https://wa.me/5491112345678");
+    assert.equal(url.origin + url.pathname, "https://wa.me/5491166778899");
     assert.equal(url.searchParams.get("text"), [
       "🎂 *NUEVO PEDIDO - FÁBRICA DE TORTAS*",
       "👤 *Cliente:* Ana & José",
