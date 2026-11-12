@@ -67,6 +67,13 @@ La sección «Sobre nosotros» presenta la propuesta artesanal, los envíos y el
 retiro en fábrica. La ubicación y los horarios de retiro están pendientes de
 confirmación y deben actualizarse en `components/AboutSection.tsx`.
 
+Los metadatos SEO y de redes sociales están configurados en `app/layout.tsx`.
+La vista previa utiliza provisionalmente una foto de torta de Unsplash; cuando
+esté disponible, reemplaza su URL y texto alternativo por la foto corporativa
+de la fábrica. Usa una imagen pública HTTPS de 1200 × 630 píxeles y actualiza
+sus dimensiones si son diferentes. El sitio también debe estar publicado en
+una URL accesible públicamente para que WhatsApp pueda generar la vista previa.
+
 El catálogo muestra los precios en pesos argentinos y permite agregar o quitar
 productos del carrito. Los filtros por categoría no vacían el
 carrito ni las notas de los productos. Para abrir el detalle, selecciona la
