@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ProductCard, { type CatalogProduct, formatPrice } from "@/components/ProductCard";
 import ProductDetailModal from "@/components/ProductDetailModal";
 import { useCart } from "@/components/CartProvider";
+import { useCartStore } from "@/lib/store/useCartStore";
 
 export default function ProductGrid({
   products,
@@ -12,31 +13,45 @@ export default function ProductGrid({
   products: CatalogProduct[];
   selectedCategory?: string | null;
 }) {
-  const { quantities, count, addProduct, removeProduct } = useCart();
-  const [announcement, setAnnouncement] = useState("");
+  const { notify } = useCart();
+  const items = useCartStore((state) => state.items);
+  const addToCart = useCartStore((state) => state.addProduct);
+  const removeFromCart = useCartStore((state) => state.removeProduct);
   const [selectedProduct, setSelectedProduct] = useState<CatalogProduct | null>(null);
   const [notes, setNotes] = useState<Record<string, string>>({});
-  const selectedProducts = products.filter((product) => quantities[product.id] > 0);
+
+  useEffect(() => {
+    if (!useCartStore.persist.hasHydrated()) void useCartStore.persist.rehydrate();
+  }, []);
+
   const visibleProducts = selectedCategory === null
     ? products
     : products.filter((product) => product.categoryId === selectedCategory);
-  function removeFromCart(product: CatalogProduct) {
-    removeProduct(product.id);
-    setAnnouncement(`${product.name} eliminado del carrito.`);
+  const count = items.reduce((total, item) => total + item.quantity, 0);
+
+  function addProduct(product: CatalogProduct) {
+    addToCart(product);
+    const quantity = useCartStore.getState().items.find((item) => item.product.id === product.id)?.quantity;
+    notify(`${product.name} agregado al carrito. Cantidad: ${quantity}.`);
+  }
+
+  function removeProduct(product: CatalogProduct) {
+    removeFromCart(product.id);
+    notify(`${product.name} eliminado del carrito.`);
   }
 
   return (
     <>
       <details id="carrito" className="cart-summary">
         <summary>Carrito: {count} {count === 1 ? "producto" : "productos"}</summary>
-        {selectedProducts.length === 0 ? (
+        {items.length === 0 ? (
           <p>Tu carrito está vacío.</p>
         ) : (
           <ul>
-            {selectedProducts.map((product) => (
+            {items.map(({ product, quantity }) => (
               <li key={product.id}>
-                <span>{product.name} × {quantities[product.id]} — {formatPrice(product.price)}</span>
-                <button type="button" onClick={() => removeFromCart(product)}>
+                <span>{product.name} × {quantity} — {formatPrice(product.price)}</span>
+                <button type="button" onClick={() => removeProduct(product)}>
                   Quitar <span className="sr-only">{product.name}</span>
                 </button>
               </li>
@@ -44,7 +59,6 @@ export default function ProductGrid({
           </ul>
         )}
       </details>
-      <p className="sr-only" role="status" aria-live="polite">{announcement}</p>
       <div aria-live="polite" aria-atomic="true">
         {visibleProducts.length === 0 ? (
           <p className="catalog-message">
@@ -58,7 +72,7 @@ export default function ProductGrid({
               <li key={product.id}>
                 <ProductCard
                   product={product}
-                  onAdd={() => addProduct(product.id, product.name)}
+                  onAdd={() => addProduct(product)}
                   onSelect={() => setSelectedProduct(product)}
                 />
               </li>

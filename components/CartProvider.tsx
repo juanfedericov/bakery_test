@@ -3,45 +3,30 @@
 import { createContext, useContext, useEffect, useReducer, type ReactNode } from "react";
 
 type CartState = {
-  quantities: Record<string, number>;
   toast: { id: number; message: string } | null;
   nextToastId: number;
 };
 
 type CartAction =
-  | { type: "add"; id: string; name: string }
-  | { type: "remove"; id: string }
+  | { type: "notify"; message: string }
   | { type: "dismiss"; id: number };
 
 function cartReducer(state: CartState, action: CartAction): CartState {
   switch (action.type) {
-    case "add": {
-      const quantity = (state.quantities[action.id] ?? 0) + 1;
+    case "notify":
       return {
-        quantities: { ...state.quantities, [action.id]: quantity },
-        toast: { id: state.nextToastId, message: `${action.name} agregado al carrito. Cantidad: ${quantity}.` },
+        toast: { id: state.nextToastId, message: action.message },
         nextToastId: state.nextToastId + 1,
       };
-    }
-    case "remove": {
-      const quantities = { ...state.quantities };
-      delete quantities[action.id];
-      return { ...state, quantities };
-    }
     case "dismiss":
       return state.toast?.id === action.id ? { ...state, toast: null } : state;
   }
 }
 
-const CartContext = createContext<{
-  quantities: Record<string, number>;
-  count: number;
-  addProduct: (id: string, name: string) => void;
-  removeProduct: (id: string) => void;
-} | null>(null);
+const CartContext = createContext<{ notify: (message: string) => void } | null>(null);
 
 export function CartProvider({ children }: { children: ReactNode }) {
-  const [state, dispatch] = useReducer(cartReducer, { quantities: {}, toast: null, nextToastId: 0 });
+  const [state, dispatch] = useReducer(cartReducer, { toast: null, nextToastId: 0 });
 
   useEffect(() => {
     if (!state.toast) return;
@@ -51,12 +36,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   }, [state.toast]);
 
   return (
-    <CartContext.Provider value={{
-      quantities: state.quantities,
-      count: Object.values(state.quantities).reduce((total, quantity) => total + quantity, 0),
-      addProduct: (id, name) => dispatch({ type: "add", id, name }),
-      removeProduct: (id) => dispatch({ type: "remove", id }),
-    }}>
+    <CartContext.Provider value={{ notify: (message) => dispatch({ type: "notify", message }) }}>
       {children}
       <div className="cart-toast-region" role="status" aria-live="polite" aria-atomic="true">
         {state.toast && <p className="cart-toast">{state.toast.message}</p>}

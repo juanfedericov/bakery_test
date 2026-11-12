@@ -1,9 +1,10 @@
 "use client";
 
-import { useCart } from "./CartProvider";
+import { useCartStore } from "@/lib/store/useCartStore";
 
 export default function CartNav() {
-  const { count } = useCart();
+  const items = useCartStore((state) => state.items);
+  const count = items.reduce((total, item) => total + item.quantity, 0);
 
   return (
     <nav aria-label="Navegación principal">
