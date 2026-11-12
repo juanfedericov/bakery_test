@@ -73,6 +73,8 @@ carrito ni las notas de los productos. Para abrir el detalle, selecciona la
 imagen o información de una tarjeta; el botón «Agregar al Carrito» no abre el
 modal. El carrito se mantiene solo en memoria:
 se vacía al recargar la página y todavía no permite finalizar pedidos. Las
+compras actualizan el contador del encabezado y muestran una confirmación
+temporal; el enlace del encabezado lleva al resumen del carrito. Las
 imágenes de productos pueden ser rutas locales de `public/` o enlaces HTTPS a
 `images.unsplash.com/photo-*`; las demás se muestran sin foto hasta configurar
 su origen en Next.js y actualizar la validación del catálogo.

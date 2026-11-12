@@ -3,8 +3,10 @@ import test from "node:test";
 import { JSDOM } from "jsdom";
 import { act } from "react";
 import Catalog from "../components/Catalog";
+import CartNav from "../components/CartNav";
+import { CartProvider } from "../components/CartProvider";
 
-test("integra filtros, tarjetas, carrito y detalle con notas independientes", async () => {
+test("integra filtros, tarjetas, carrito y detalle con notas independientes", async (t) => {
   const dom = new JSDOM("<!doctype html><html><body><div id='root'></div></body></html>", {
     url: "http://localhost/",
   });
@@ -47,16 +49,35 @@ test("integra filtros, tarjetas, carrito y detalle con notas independientes", as
 
   try {
     await act(async () => root.render(
-      <Catalog
-        categories={[{ id: "tortas", name: "Tortas" }, { id: "tartas", name: "Tartas" }, { id: "vacia", name: "Vacía" }]}
-        products={[product, { ...product, id: "tarta", name: "Tarta", categoryId: "tartas", ingredients: null, servings: null, imageUrl: null }]}
-      />,
+      <CartProvider>
+        <CartNav />
+        <Catalog
+          categories={[{ id: "tortas", name: "Tortas" }, { id: "tartas", name: "Tartas" }, { id: "vacia", name: "Vacía" }]}
+          products={[product, { ...product, id: "tarta", name: "Tarta", categoryId: "tartas", ingredients: null, servings: null, imageUrl: null }]}
+        />
+      </CartProvider>,
     ));
 
     assert.match(container.textContent!, /\$\s*15\.000/);
     assert.ok(container.querySelector('img[alt="Torta Rogel"]'));
+    const nav = container.querySelector<HTMLAnchorElement>(".header-cart")!;
+    const toast = container.querySelector<HTMLElement>(".cart-toast-region")!;
+    assert.equal(nav.getAttribute("aria-label"), "Carrito: 0 productos");
+    assert.equal(nav.getAttribute("href"), "#carrito");
+    assert.equal(toast.textContent, "");
+    t.mock.timers.enable({ apis: ["setTimeout"] });
     await click('button[aria-label="Agregar Torta Rogel al carrito"]');
     assert.match(container.textContent!, /Carrito: 1 producto/);
+    assert.equal(nav.getAttribute("aria-label"), "Carrito: 1 producto");
+    assert.match(toast.textContent!, /Torta Rogel agregado al carrito. Cantidad: 1/);
+    await act(async () => t.mock.timers.tick(3000));
+    await click('button[aria-label="Agregar Torta Rogel al carrito"]');
+    assert.equal(nav.getAttribute("aria-label"), "Carrito: 2 productos");
+    assert.match(toast.textContent!, /Cantidad: 2/);
+    await act(async () => t.mock.timers.tick(1000));
+    assert.match(toast.textContent!, /Torta Rogel agregado/);
+    await act(async () => t.mock.timers.tick(3000));
+    assert.equal(toast.textContent, "");
     assert.equal(container.querySelector("dialog"), null);
 
     await click('button[aria-label="Ver detalle de Torta Rogel"]');
@@ -82,7 +103,10 @@ test("integra filtros, tarjetas, carrito y detalle con notas independientes", as
     };
     await filter("Tartas");
     assert.equal(container.querySelector('button[aria-label="Ver detalle de Torta Rogel"]'), null);
-    assert.match(container.textContent!, /Carrito: 1 producto/);
+    assert.match(container.textContent!, /Carrito: 2 productos/);
+    await click('button[aria-label="Agregar Tarta al carrito"]');
+    assert.equal(nav.getAttribute("aria-label"), "Carrito: 3 productos");
+    assert.match(toast.textContent!, /Tarta agregado al carrito. Cantidad: 1/);
     await click('button[aria-label="Ver detalle de Tarta"]');
     assert.equal(container.querySelector("textarea")!.value, "");
     assert.match(container.textContent!, /Ingredientes no disponibles/);
@@ -90,13 +114,16 @@ test("integra filtros, tarjetas, carrito y detalle con notas independientes", as
     await click('button[aria-label="Cerrar detalle"]');
     await filter("Vacía");
     assert.match(container.textContent!, /No hay productos en esta categoría/);
-    assert.match(container.textContent!, /Carrito: 1 producto/);
+    assert.match(container.textContent!, /Carrito: 3 productos/);
     await filter("Tortas");
     await click('button[aria-label="Ver detalle de Torta Rogel"]');
     assert.equal(container.querySelector("textarea")!.value, "Feliz cumpleaños");
     await click('button[aria-label="Cerrar detalle"]');
     await click(".cart-summary button");
+    assert.equal(nav.getAttribute("aria-label"), "Carrito: 1 producto");
+    await click(".cart-summary button");
     assert.match(container.textContent!, /Carrito: 0 productos/);
+    assert.equal(nav.getAttribute("aria-label"), "Carrito: 0 productos");
   } finally {
     await act(async () => root.unmount());
     dom.window.close();

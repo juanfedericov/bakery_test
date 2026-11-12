@@ -3,6 +3,7 @@
 import { useState } from "react";
 import ProductCard, { type CatalogProduct, formatPrice } from "@/components/ProductCard";
 import ProductDetailModal from "@/components/ProductDetailModal";
+import { useCart } from "@/components/CartProvider";
 
 export default function ProductGrid({
   products,
@@ -11,7 +12,7 @@ export default function ProductGrid({
   products: CatalogProduct[];
   selectedCategory?: string | null;
 }) {
-  const [quantities, setQuantities] = useState<Record<string, number>>({});
+  const { quantities, count, addProduct, removeProduct } = useCart();
   const [announcement, setAnnouncement] = useState("");
   const [selectedProduct, setSelectedProduct] = useState<CatalogProduct | null>(null);
   const [notes, setNotes] = useState<Record<string, string>>({});
@@ -19,25 +20,14 @@ export default function ProductGrid({
   const visibleProducts = selectedCategory === null
     ? products
     : products.filter((product) => product.categoryId === selectedCategory);
-  const count = selectedProducts.reduce((total, product) => total + quantities[product.id], 0);
-
-  function addProduct(product: CatalogProduct) {
-    setQuantities((current) => ({ ...current, [product.id]: (current[product.id] ?? 0) + 1 }));
-    setAnnouncement(`${product.name} agregado al carrito. Cantidad: ${(quantities[product.id] ?? 0) + 1}.`);
-  }
-
-  function removeProduct(product: CatalogProduct) {
-    setQuantities((current) => {
-      const next = { ...current };
-      delete next[product.id];
-      return next;
-    });
+  function removeFromCart(product: CatalogProduct) {
+    removeProduct(product.id);
     setAnnouncement(`${product.name} eliminado del carrito.`);
   }
 
   return (
     <>
-      <details className="cart-summary">
+      <details id="carrito" className="cart-summary">
         <summary>Carrito: {count} {count === 1 ? "producto" : "productos"}</summary>
         {selectedProducts.length === 0 ? (
           <p>Tu carrito está vacío.</p>
@@ -46,7 +36,7 @@ export default function ProductGrid({
             {selectedProducts.map((product) => (
               <li key={product.id}>
                 <span>{product.name} × {quantities[product.id]} — {formatPrice(product.price)}</span>
-                <button type="button" onClick={() => removeProduct(product)}>
+                <button type="button" onClick={() => removeFromCart(product)}>
                   Quitar <span className="sr-only">{product.name}</span>
                 </button>
               </li>
@@ -68,7 +58,7 @@ export default function ProductGrid({
               <li key={product.id}>
                 <ProductCard
                   product={product}
-                  onAdd={() => addProduct(product)}
+                  onAdd={() => addProduct(product.id, product.name)}
                   onSelect={() => setSelectedProduct(product)}
                 />
               </li>
