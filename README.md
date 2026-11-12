@@ -48,7 +48,13 @@ la página permanezca abierta, pero todavía no se envían ni guardan en un pedi
 El esquema contiene categorías, productos y pedidos. Cada producto pertenece a
 una categoría; cada línea de pedido registra el producto, la cantidad y el
 precio unitario de ese pedido. Los importes se almacenan como decimales para
-evitar errores de precisión de punto flotante.
+evitar errores de precisión de punto flotante. Los pedidos nuevos también guardan
+los datos del cliente y entrega, dedicatoria, total y estado «Pendiente»; los
+pedidos anteriores a esta migración pueden no tener esos datos.
+
+Configura `WHATSAPP_NUMBER` en `.env` con el número del comercio en formato
+internacional, solo dígitos y sin `+` (por ejemplo, `5491112345678`). Sin un
+número válido no se habilita el envío del checkout.
 
 ## Desarrollo
 
@@ -72,11 +78,14 @@ productos del carrito. Los filtros por categoría no vacían el
 carrito ni las notas de los productos. Para abrir el detalle, selecciona la
 imagen o información de una tarjeta; el botón «Agregar al Carrito» no abre el
 modal. El carrito y las cantidades se guardan en el almacenamiento local del
-navegador y se recuperan al recargar la página; todavía no permite finalizar
-pedidos. Desde el carrito se puede acceder a `/checkout` para completar y
+navegador y se recuperan al recargar la página. Desde el carrito se puede acceder
+a `/checkout` para completar y
 validar nombre, teléfono, método de entrega y fecha y hora estimada; para
-envíos también se requiere una dirección. Estos datos todavía no se guardan
-ni se envía el pedido. Las notas no se guardan al recargar. Las compras actualizan el
+envíos también se requiere una dirección. Al enviar, `POST /api/orders` valida
+los productos y precios actuales, guarda el pedido y después abre WhatsApp con
+el mensaje. Si falla el guardado, no se abre WhatsApp. Si cambió un precio,
+quitá el producto del carrito y agregalo nuevamente. Las notas de los productos
+no se guardan al recargar ni se incluyen en el pedido. Las compras actualizan el
 contador del encabezado y muestran una confirmación temporal; el enlace del
 encabezado lleva al resumen del carrito. Las
 imágenes de productos pueden ser rutas locales de `public/` o enlaces HTTPS a
@@ -113,8 +122,8 @@ una dedicatoria opcional. Los productos usan la misma estructura
 `{ product: { name, price }, quantity }` que el carrito; el precio es unitario
 y el total se calcula a partir de las cantidades. Retorna solamente el texto
 codificado con `encodeURIComponent`, listo para usar como parámetro `text` en
-un enlace de WhatsApp. No construye el enlace completo ni envía el pedido; el
-número del comercio y la integración del checkout están pendientes.
+un enlace de WhatsApp. El checkout construye el enlace después de guardar
+el pedido, usando el número configurado para el comercio.
 
 Tailwind CSS se importa en `app/globals.css` y se integra con Turbopack mediante
 `next.config.ts`.
