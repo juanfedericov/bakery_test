@@ -21,21 +21,21 @@ export function buildWhatsAppMessage(order: WhatsAppOrder): string {
   ) / 100;
 
   const lines = [
-    "🎂 *NUEVO PEDIDO - FÁBRICA DE TORTAS*",
-    `👤 *Cliente:* ${order.customerName}`,
-    `📞 *Teléfono:* ${order.phone}`,
-    `🚚 *Entrega:* ${order.delivery}`,
-    `📅 *Fecha:* ${order.date} - ${order.time} hs`,
+    "\u{1F382} *NUEVO PEDIDO - F\u{C1}BRICA DE TORTAS*",
+    `\u{1F464} *Cliente:* ${order.customerName}`,
+    `\u{1F4DE} *Tel\u{E9}fono:* ${order.phone}`,
+    `\u{1F69A} *Entrega:* ${order.delivery}`,
+    `\u{1F4C5} *Fecha:* ${order.date} - ${order.time} hs`,
     "",
-    "📋 *Detalle del Pedido:*",
-    ...order.items.map(({ product, quantity }) => `• ${quantity}x ${product.name} (${price(product.price)})`),
+    "\u{1F4CB} *Detalle del Pedido:*",
+    ...order.items.map(({ product, quantity }) => `\u{2022} ${quantity}x ${product.name} (${price(product.price)})`),
     "",
   ];
 
   if (order.dedication?.trim()) {
-    lines.push(`✍️ *Dedicatoria:* "${order.dedication}"`);
+    lines.push(`\u{270D}\u{FE0F} *Dedicatoria:* "${order.dedication}"`);
   }
-  lines.push(`💰 *TOTAL:* ${price(total)}`);
+  lines.push(`\u{1F4B0} *TOTAL:* ${price(total)}`);
 
   return lines.join("\n");
 }
