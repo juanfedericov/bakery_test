@@ -4,6 +4,7 @@ import { JSDOM } from "jsdom";
 import { act } from "react";
 import { renderToString } from "react-dom/server";
 import ProductGrid from "../components/ProductGrid";
+import { CartProvider } from "../components/CartProvider";
 import { useCartStore } from "../lib/store/useCartStore";
 
 test("recupera y actualiza productos y cantidades guardados sin errores de hidratación", async () => {
@@ -13,7 +14,9 @@ test("recupera y actualiza productos y cantidades guardados sin errores de hidra
     imageUrl: null, price: 15000,
   };
   const other = { ...product, id: "tarta", name: "Tarta" };
-  const html = renderToString(<ProductGrid products={[product, other]} />);
+  const html = renderToString(
+    <CartProvider><ProductGrid products={[product, other]} /></CartProvider>,
+  );
   const dom = new JSDOM(`<!doctype html><html><body><div id="root">${html}</div></body></html>`, {
     url: "http://localhost/",
   });
@@ -40,7 +43,9 @@ test("recupera y actualiza productos y cantidades guardados sin errores de hidra
 
   try {
     await act(async () => {
-      root = hydrateRoot(container, <ProductGrid products={[product, other]} />, {
+      root = hydrateRoot(container, (
+        <CartProvider><ProductGrid products={[product, other]} /></CartProvider>
+      ), {
         onRecoverableError: (error) => errors.push(error),
       });
     });
