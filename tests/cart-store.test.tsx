@@ -65,6 +65,7 @@ test("recupera y actualiza productos y cantidades guardados sin errores de hidra
       { product, quantity: 3 },
       { product: other, quantity: 1 },
     ]);
+    assert.equal(JSON.parse(saved).state.cakeDedication, "");
 
     await act(async () => {
       useCartStore.setState({ items: [] });

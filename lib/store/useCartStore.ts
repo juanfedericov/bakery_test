@@ -9,14 +9,17 @@ type CartItem = {
 
 type CartStore = {
   items: CartItem[];
+  cakeDedication: string;
   addProduct: (product: CatalogProduct) => void;
   removeProduct: (productId: string) => void;
+  setCakeDedication: (dedication: string) => void;
 };
 
 export const useCartStore = create<CartStore>()(
   persist(
     (set) => ({
       items: [],
+      cakeDedication: "",
       addProduct: (product) => set((state) => {
         const existing = state.items.find((item) => item.product.id === product.id);
         return {
@@ -30,6 +33,7 @@ export const useCartStore = create<CartStore>()(
       removeProduct: (productId) => set((state) => ({
         items: state.items.filter((item) => item.product.id !== productId),
       })),
+      setCakeDedication: (cakeDedication) => set({ cakeDedication }),
     }),
     {
       name: "bakery-cart",
@@ -38,7 +42,7 @@ export const useCartStore = create<CartStore>()(
         setItem: (key, value) => window.localStorage.setItem(key, value),
         removeItem: (key) => window.localStorage.removeItem(key),
       })),
-      partialize: (state) => ({ items: state.items }),
+      partialize: (state) => ({ items: state.items, cakeDedication: state.cakeDedication }),
       skipHydration: true,
       onRehydrateStorage: () => (_state, error) => {
         if (error) console.error("No se pudo recuperar el carrito guardado.", error);

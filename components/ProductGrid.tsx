@@ -15,8 +15,10 @@ export default function ProductGrid({
 }) {
   const { notify } = useCart();
   const items = useCartStore((state) => state.items);
+  const cakeDedication = useCartStore((state) => state.cakeDedication);
   const addToCart = useCartStore((state) => state.addProduct);
   const removeFromCart = useCartStore((state) => state.removeProduct);
+  const setCakeDedication = useCartStore((state) => state.setCakeDedication);
   const [selectedProduct, setSelectedProduct] = useState<CatalogProduct | null>(null);
   const [notes, setNotes] = useState<Record<string, string>>({});
 
@@ -60,6 +62,24 @@ export default function ProductGrid({
           </ul>
         )}
         <p>Total: {formatPrice(total)}</p>
+        <div className="cart-dedication">
+          <label htmlFor="cake-dedication">Mensaje / Dedicatoria para la torta <span>(opcional)</span></label>
+          <textarea
+            id="cake-dedication"
+            rows={3}
+            value={cakeDedication}
+            onChange={(event) => setCakeDedication(event.target.value)}
+            placeholder="Ej. ¡Feliz cumpleaños, Mateo!"
+            aria-describedby="cake-dedication-help"
+          />
+          <p id="cake-dedication-help">Podés incluir aclaraciones de alergias u otras notas para el pastelero.</p>
+        </div>
+        {cakeDedication.trim() && (
+          <section className="cart-order-note" aria-label="Resumen para el pastelero">
+            <h3>Mensaje para el pastelero</h3>
+            <p>{cakeDedication}</p>
+          </section>
+        )}
       </details>
       <div aria-live="polite" aria-atomic="true">
         {visibleProducts.length === 0 ? (

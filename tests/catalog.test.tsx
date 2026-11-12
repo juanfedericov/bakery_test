@@ -5,6 +5,7 @@ import { act } from "react";
 import Catalog from "../components/Catalog";
 import CartNav from "../components/CartNav";
 import { CartProvider } from "../components/CartProvider";
+import { useCartStore } from "../lib/store/useCartStore";
 
 test("integra filtros, tarjetas, carrito y detalle con notas independientes", async (t) => {
   const dom = new JSDOM("<!doctype html><html><body><div id='root'></div></body></html>", {
@@ -65,6 +66,21 @@ test("integra filtros, tarjetas, carrito y detalle con notas independientes", as
     assert.equal(nav.getAttribute("aria-label"), "Carrito: 0 productos");
     assert.equal(nav.getAttribute("href"), "#carrito");
     assert.equal(toast.textContent, "");
+    const dedication = container.querySelector<HTMLTextAreaElement>("#cake-dedication")!;
+    const dedicationValueSetter = Object.getOwnPropertyDescriptor(dom.window.HTMLTextAreaElement.prototype, "value")!.set!;
+    const message = "¡Feliz Cumpie Mateo! Alergia al maní";
+    await act(async () => {
+      dedicationValueSetter.call(dedication, message);
+      dedication.dispatchEvent(new dom.window.Event("input", { bubbles: true }));
+    });
+    assert.equal(container.querySelector(".cart-order-note")?.textContent?.trim(), `Mensaje para el pastelero${message}`);
+    assert.equal(useCartStore.getState().cakeDedication, message);
+    assert.equal(JSON.parse(dom.window.localStorage.getItem("bakery-cart")!).state.cakeDedication, message);
+    await act(async () => {
+      dedicationValueSetter.call(dedication, "");
+      dedication.dispatchEvent(new dom.window.Event("input", { bubbles: true }));
+    });
+    assert.equal(container.querySelector(".cart-order-note"), null);
     t.mock.timers.enable({ apis: ["setTimeout"] });
     await click('button[aria-label="Agregar Torta Rogel al carrito"]');
     assert.match(container.textContent!, /Carrito: 1 producto/);
@@ -85,7 +101,7 @@ test("integra filtros, tarjetas, carrito y detalle con notas independientes", as
     assert.match(container.textContent!, /Descripción completa de la Torta Rogel/);
     assert.match(container.textContent!, /Harina, dulce de leche y merengue/);
     assert.match(container.textContent!, /Rinde 10 a 12 personas/);
-    const textarea = container.querySelector("textarea")!;
+    const textarea = container.querySelector<HTMLTextAreaElement>(".product-modal textarea")!;
     const setValue = Object.getOwnPropertyDescriptor(dom.window.HTMLTextAreaElement.prototype, "value")!.set!;
     await act(async () => {
       setValue.call(textarea, "Feliz cumpleaños");
@@ -108,7 +124,7 @@ test("integra filtros, tarjetas, carrito y detalle con notas independientes", as
     assert.equal(nav.getAttribute("aria-label"), "Carrito: 3 productos");
     assert.match(toast.textContent!, /Tarta agregado al carrito. Cantidad: 1/);
     await click('button[aria-label="Ver detalle de Tarta"]');
-    assert.equal(container.querySelector("textarea")!.value, "");
+    assert.equal(container.querySelector<HTMLTextAreaElement>(".product-modal textarea")!.value, "");
     assert.match(container.textContent!, /Ingredientes no disponibles/);
     assert.match(container.textContent!, /Porciones no disponibles/);
     await click('button[aria-label="Cerrar detalle"]');
@@ -117,7 +133,7 @@ test("integra filtros, tarjetas, carrito y detalle con notas independientes", as
     assert.match(container.textContent!, /Carrito: 3 productos/);
     await filter("Tortas");
     await click('button[aria-label="Ver detalle de Torta Rogel"]');
-    assert.equal(container.querySelector("textarea")!.value, "Feliz cumpleaños");
+    assert.equal(container.querySelector<HTMLTextAreaElement>(".product-modal textarea")!.value, "Feliz cumpleaños");
     await click('button[aria-label="Cerrar detalle"]');
     await click(".cart-summary button");
     assert.equal(nav.getAttribute("aria-label"), "Carrito: 1 producto");
