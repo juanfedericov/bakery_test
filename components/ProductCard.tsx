@@ -1,30 +1,15 @@
 import Image from "next/image";
 import { useState } from "react";
+import { formatPrice } from "@/lib/formatPrice";
 import type { ProductDetail } from "./ProductDetailModal";
+
+export { formatPrice } from "@/lib/formatPrice";
 
 export type CatalogProduct = ProductDetail & {
   categoryId: string;
   imageUrl: string | null;
   price: number;
 };
-
-const integerPriceFormatter = new Intl.NumberFormat("es-AR", {
-  style: "currency",
-  currency: "ARS",
-  minimumFractionDigits: 0,
-  maximumFractionDigits: 2,
-});
-
-const decimalPriceFormatter = new Intl.NumberFormat("es-AR", {
-  style: "currency",
-  currency: "ARS",
-  minimumFractionDigits: 2,
-  maximumFractionDigits: 2,
-});
-
-export function formatPrice(price: number) {
-  return (Number.isInteger(price) ? integerPriceFormatter : decimalPriceFormatter).format(price);
-}
 
 export default function ProductCard({
   product,
