@@ -91,6 +91,21 @@ a:focus-visible, button:focus-visible, summary:focus-visible { outline: 3px soli
 .cart-summary p { color: var(--muted); }
 .cart-summary li { display: flex; align-items: center; justify-content: space-between; gap: 16px; border-top: 1px solid #e7d8cb; padding: 8px 0; }
 .cart-summary button { min-height: 44px; padding: 8px; color: var(--rose); cursor: pointer; text-decoration: underline; }
+.cart-summary-checkout { display: inline-flex; min-height: 44px; align-items: center; margin-top: 12px; color: var(--rose); font-weight: 700; text-decoration: underline; }
+.checkout-page { flex: 1; padding: 60px 7% 100px; }
+.checkout-inner { max-width: 620px; margin: auto; }
+.checkout-back { display: inline-block; margin-bottom: 48px; color: var(--rose); font-size: 14px; font-weight: 700; }
+.checkout-page h1 { margin: 14px 0; font-family: Georgia, serif; font-size: clamp(40px, 5vw, 58px); line-height: 1.1; }
+.checkout-intro, .checkout-required, .checkout-note { color: var(--muted); line-height: 1.7; }
+.checkout-form { margin-top: 32px; border: 1px solid #e7d8cb; padding: 32px; background: #fffaf5; }
+.checkout-required, .checkout-note { font-size: 13px; }
+.checkout-field { margin-top: 20px; }
+.checkout-field label { display: block; margin-bottom: 8px; font-size: 14px; font-weight: 700; }
+.checkout-field input, .checkout-field select { display: block; width: 100%; min-height: 48px; border: 1px solid #cdbbb0; border-radius: 0; padding: 10px 12px; background: white; color: var(--ink); }
+.checkout-field input:focus-visible, .checkout-field select:focus-visible { outline: 3px solid var(--rose); outline-offset: 3px; }
+.checkout-submit { width: 100%; min-height: 48px; margin-top: 28px; padding: 12px; background: var(--rose); color: white; font-weight: 700; cursor: pointer; }
+.checkout-submit:hover { background: #863d3a; }
+.checkout-note { margin-top: 14px; }
 .product-list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; margin-top: 24px; }
 .product-list > li { min-width: 0; }
 .product-card { height: 100%; display: flex; flex-direction: column; border: 1px solid #e7d8cb; background: #fffaf5; }
@@ -141,6 +156,8 @@ a:focus-visible, button:focus-visible, summary:focus-visible { outline: 3px soli
   .cart-drawer-header { padding: 24px; }
   .cart-drawer-items { padding: 0 24px; }
   .cart-drawer-footer { padding: 20px 24px 24px; }
+  .checkout-page { padding: 40px 6% 75px; }
+  .checkout-form { padding: 24px; }
   .hero-content { display: flex; flex-direction: column; align-items: stretch; gap: 46px; padding: 55px 0 65px; }
   .hero h1 { font-size: clamp(48px, 11vw, 68px); }
   .hero-description { font-size: 15px; }

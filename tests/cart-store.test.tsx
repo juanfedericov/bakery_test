@@ -53,6 +53,7 @@ test("recupera y actualiza productos y cantidades guardados sin errores de hidra
     assert.match(container.textContent!, /Carrito: 3 productos/);
     assert.match(container.textContent!, /Torta Rogel × 2/);
     assert.match(container.textContent!, /Tarta × 1/);
+    assert.equal(container.querySelector<HTMLAnchorElement>(".cart-summary a")?.getAttribute("href"), "/checkout");
     assert.match(container.querySelector(".cart-summary")!.textContent!.replace(/\s/g, ""), /Total:\$30\.100,25/);
 
     await act(async () => {
@@ -81,6 +82,8 @@ test("recupera y actualiza productos y cantidades guardados sin errores de hidra
     assert.deepEqual(JSON.parse(dom.window.localStorage.getItem("bakery-cart")!).state.items, [
       { product: other, quantity: 1 },
     ]);
+    await act(async () => useCartStore.getState().removeProduct(other.id));
+    assert.equal(container.querySelector(".cart-summary a"), null);
   } finally {
     await act(async () => root!.unmount());
     dom.window.close();
