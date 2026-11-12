@@ -1,19 +1,22 @@
 import Image from "next/image";
-import { CartButton } from "./CartProvider";
+import CartNav from "./CartNav";
 
 export default function HeroSection() {
   return (
-    <section className="hero" aria-labelledby="hero-title">
-      <div className="hero-inner">
-        <header className="hero-header">
-          <span className="brand">
-            bakery<span>.</span>
-          </span>
-          <div className="header-actions">
+    <>
+      <header className="site-header">
+        <div className="hero-inner">
+          <div className="hero-header">
+            <span className="brand">
+              bakery<span>.</span>
+            </span>
             <span className="header-note">PASTELERÍA ARTESANAL</span>
-            <CartButton />
+            <CartNav />
           </div>
-        </header>
+        </div>
+      </header>
+      <section className="hero" aria-labelledby="hero-title">
+        <div className="hero-inner">
 
         <div className="hero-content">
           <div className="hero-copy">
@@ -63,7 +66,8 @@ export default function HeroSection() {
           <span>PEQUEÑOS PLACERES, GRANDES MOMENTOS</span>
           <span>DESLIZÁ PARA DESCUBRIR ↓</span>
         </div>
-      </div>
-    </section>
+        </div>
+      </section>
+    </>
   );
 }

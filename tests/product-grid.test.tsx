@@ -5,6 +5,7 @@ import ProductGrid from "../components/ProductGrid";
 import { CartButton, CartProvider } from "../components/CartProvider";
 import { formatPrice } from "../components/ProductCard";
 import { isSupportedProductImage } from "../lib/product-image";
+import { CartProvider } from "../components/CartProvider";
 
 test("formatea precios enteros y con centavos en pesos argentinos", () => {
   assert.equal(formatPrice(15000).replace(/\s/g, ""), "$15.000");
@@ -13,7 +14,7 @@ test("formatea precios enteros y con centavos en pesos argentinos", () => {
 
 test("renderiza las tarjetas y el estado inicial del carrito", () => {
   const html = renderToStaticMarkup(
-    <CartProvider><CartButton /><ProductGrid products={[
+    <CartProvider><ProductGrid products={[
       { id: "1", name: "Torta", description: "De chocolate", price: 15000, imageUrl: "/file.svg", categoryId: "1", ingredients: null, servings: null },
       { id: "2", name: "Tarta", description: null, price: 15000.5, imageUrl: null, categoryId: "2", ingredients: null, servings: null },
     ]} /></CartProvider>,
@@ -38,7 +39,7 @@ test("solo admite imágenes locales o de los orígenes configurados", () => {
 });
 
 test("muestra el estado vacío del catálogo", () => {
-  const html = renderToStaticMarkup(<CartProvider><CartButton /><ProductGrid products={[]} /></CartProvider>);
+  const html = renderToStaticMarkup(<CartProvider><ProductGrid products={[]} /></CartProvider>);
   assert.match(html, /Todavía no hay productos en el catálogo/);
   assert.match(html, /Abrir carrito: 0 productos/);
 });
