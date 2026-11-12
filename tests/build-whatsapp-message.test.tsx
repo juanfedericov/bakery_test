@@ -1,9 +1,34 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { buildWhatsAppUrl } from "../lib/buildWhatsAppUrl";
+import { buildWhatsAppMessage } from "../lib/buildWhatsAppMessage";
 
-test("codifica el pedido con el formato esperado para WhatsApp", () => {
-  const encoded = buildWhatsAppUrl({
+test("renderiza el ejemplo de pedido con saltos LF", () => {
+  const message = buildWhatsAppMessage({
+    customerName: "pepe",
+    phone: "3300",
+    delivery: "Envío: arturo",
+    date: "19/11/2026",
+    time: "07:10",
+    items: [{ product: { name: "Mousse de chocolate", price: 5000 }, quantity: 1 }],
+  });
+
+  assert.equal(message, [
+    "🎂 *NUEVO PEDIDO - FÁBRICA DE TORTAS*",
+    "👤 *Cliente:* pepe",
+    "📞 *Teléfono:* 3300",
+    "🚚 *Entrega:* Envío: arturo",
+    "📅 *Fecha:* 19/11/2026 - 07:10 hs",
+    "",
+    "📋 *Detalle del Pedido:*",
+    "• 1x Mousse de chocolate ($5.000)",
+    "",
+    "💰 *TOTAL:* $5.000",
+  ].join("\n"));
+  assert.doesNotMatch(message, /\r/);
+});
+
+test("genera el mensaje del pedido con el formato y saltos esperados para WhatsApp", () => {
+  const message = buildWhatsAppMessage({
     customerName: "María",
     phone: "+549...",
     delivery: "Retiro en local",
@@ -16,26 +41,25 @@ test("codifica el pedido con el formato esperado para WhatsApp", () => {
     dedication: "Feliz día",
   });
 
-  assert.equal(decodeURIComponent(encoded), [
+  assert.equal(message, [
     "🎂 *NUEVO PEDIDO - FÁBRICA DE TORTAS*",
     "👤 *Cliente:* María",
     "📞 *Teléfono:* +549...",
-    "📍 *Entrega:* Retiro en local",
+    "🚚 *Entrega:* Retiro en local",
     "📅 *Fecha:* 15/11/2026 - 16:00 hs",
     "",
-    "📝 *Detalle del Pedido:*",
+    "📋 *Detalle del Pedido:*",
     "• 1x Torta Marquise ($10.000)",
     "• 1x Lemon Pie ($8.000)",
     "",
     "✍️ *Dedicatoria:* \"Feliz día\"",
     "💰 *TOTAL:* $18.000",
   ].join("\n"));
-  const url = new URL(`https://wa.me/5491112345678?text=${encoded}`);
-  assert.equal(url.searchParams.get("text"), decodeURIComponent(encoded));
+  assert.doesNotMatch(message, /\r/);
 });
 
-test("calcula cantidades y centavos, omite la dedicatoria vacía y codifica caracteres reservados", () => {
-  const encoded = buildWhatsAppUrl({
+test("calcula cantidades y centavos, omite la dedicatoria vacía y preserva caracteres UTF-8", () => {
+  const message = buildWhatsAppMessage({
     customerName: "Ana & José",
     phone: "+54 11",
     delivery: "Envío #1",
@@ -48,12 +72,11 @@ test("calcula cantidades y centavos, omite la dedicatoria vacía y codifica cara
     dedication: " ",
   });
 
-  const url = new URL(`https://wa.me/5491112345678?text=${encoded}`);
-  const message = url.searchParams.get("text")!;
   assert.match(message, /Cliente:\* Ana & José/);
   assert.match(message, /Entrega:\* Envío #1/);
   assert.match(message, /• 3x Tarta \+ crema \(\$100,25\)/);
   assert.match(message, /• 2x Alfajor \(\$0,10\)/);
   assert.match(message, /💰 \*TOTAL:\* \$300,95$/);
   assert.doesNotMatch(message, /Dedicatoria/);
+  assert.match(new URLSearchParams({ text: message }).toString(), /%C3%A9/);
 });

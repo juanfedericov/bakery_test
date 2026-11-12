@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { buildWhatsAppUrl } from "@/lib/buildWhatsAppUrl";
+import { buildWhatsAppMessage } from "@/lib/buildWhatsAppMessage";
 import { useCartStore } from "@/lib/store/useCartStore";
 
 export default function CheckoutForm({ whatsappNumber }: { whatsappNumber: string }) {
@@ -50,7 +50,7 @@ export default function CheckoutForm({ whatsappNumber }: { whatsappNumber: strin
         const delivery = deliveryMethod === "delivery"
           ? `Envío: ${String(data.get("address")).trim()}`
           : "Retiro en local";
-        const text = buildWhatsAppUrl({
+        const text = buildWhatsAppMessage({
           customerName: String(data.get("name")).trim(),
           phone: String(data.get("phone")).trim(),
           delivery,
@@ -60,7 +60,9 @@ export default function CheckoutForm({ whatsappNumber }: { whatsappNumber: strin
           dedication: cart.cakeDedication,
         });
 
-        const opened = window.open(`https://wa.me/${targetWhatsAppNumber}?text=${text}`, "_blank");
+        const whatsappUrl = new URL(`https://wa.me/${targetWhatsAppNumber}`);
+        whatsappUrl.searchParams.set("text", text);
+        const opened = window.open(whatsappUrl.toString(), "_blank");
         if (!opened) {
           setMessage("No se pudo abrir WhatsApp. Permití las ventanas emergentes y volvé a intentar.");
           return;
