@@ -62,24 +62,7 @@ export default function ProductGrid({
           </ul>
         )}
         <p>Total: {formatPrice(total)}</p>
-        <div className="cart-dedication">
-          <label htmlFor="cake-dedication">Mensaje / Dedicatoria para la torta <span>(opcional)</span></label>
-          <textarea
-            id="cake-dedication"
-            rows={3}
-            value={cakeDedication}
-            onChange={(event) => setCakeDedication(event.target.value)}
-            placeholder="Ej. ¡Feliz cumpleaños, Mateo!"
-            aria-describedby="cake-dedication-help"
-          />
-          <p id="cake-dedication-help">Podés incluir aclaraciones de alergias u otras notas para el pastelero.</p>
-        </div>
-        {cakeDedication.trim() && (
-          <section className="cart-order-note" aria-label="Resumen para el pastelero">
-            <h3>Mensaje para el pastelero</h3>
-            <p>{cakeDedication}</p>
-          </section>
-        )}
+        {items.length > 0 && <a className="cart-summary-checkout" href="/checkout">Ir al checkout</a>}
       </details>
       <div aria-live="polite" aria-atomic="true">
         {visibleProducts.length === 0 ? (
