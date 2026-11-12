@@ -13,7 +13,7 @@ export type WhatsAppOrder = {
   dedication?: string;
 };
 
-export function buildWhatsAppUrl(order: WhatsAppOrder): string {
+export function buildWhatsAppMessage(order: WhatsAppOrder): string {
   const price = (amount: number) => formatPrice(amount).replace(/\s/g, "");
   const total = order.items.reduce(
     (sum, item) => sum + Math.round(item.product.price * 100) * item.quantity,
@@ -24,10 +24,10 @@ export function buildWhatsAppUrl(order: WhatsAppOrder): string {
     "🎂 *NUEVO PEDIDO - FÁBRICA DE TORTAS*",
     `👤 *Cliente:* ${order.customerName}`,
     `📞 *Teléfono:* ${order.phone}`,
-    `📍 *Entrega:* ${order.delivery}`,
+    `🚚 *Entrega:* ${order.delivery}`,
     `📅 *Fecha:* ${order.date} - ${order.time} hs`,
     "",
-    "📝 *Detalle del Pedido:*",
+    "📋 *Detalle del Pedido:*",
     ...order.items.map(({ product, quantity }) => `• ${quantity}x ${product.name} (${price(product.price)})`),
     "",
   ];
@@ -37,5 +37,5 @@ export function buildWhatsAppUrl(order: WhatsAppOrder): string {
   }
   lines.push(`💰 *TOTAL:* ${price(total)}`);
 
-  return encodeURIComponent(lines.join("\n"));
+  return lines.join("\n");
 }
