@@ -73,19 +73,26 @@ La sección «Sobre nosotros» presenta la propuesta artesanal, los envíos y el
 retiro en fábrica. La ubicación y los horarios de retiro están pendientes de
 confirmación y deben actualizarse en `components/AboutSection.tsx`.
 
+Los metadatos SEO y de redes sociales están configurados en `app/layout.tsx`.
+La vista previa utiliza provisionalmente una foto de torta de Unsplash; cuando
+esté disponible, reemplaza su URL y texto alternativo por la foto corporativa
+de la fábrica. Usa una imagen pública HTTPS de 1200 × 630 píxeles y actualiza
+sus dimensiones si son diferentes. El sitio también debe estar publicado en
+una URL accesible públicamente para que WhatsApp pueda generar la vista previa.
+
 El catálogo muestra los precios en pesos argentinos y permite agregar o quitar
 productos del carrito. Los filtros por categoría no vacían el
 carrito ni las notas de los productos. Para abrir el detalle, selecciona la
 imagen o información de una tarjeta; el botón «Agregar al Carrito» no abre el
 modal. El carrito y las cantidades se guardan en el almacenamiento local del
-navegador y se recuperan al recargar la página. Desde el carrito se puede acceder
-a `/checkout` para completar y
-validar nombre, teléfono, método de entrega y fecha y hora estimada; para
-envíos también se requiere una dirección. Al enviar, `POST /api/orders` valida
-los productos y precios actuales, guarda el pedido y después abre WhatsApp con
-el mensaje. Si falla el guardado, no se abre WhatsApp. Si cambió un precio,
-quitá el producto del carrito y agregalo nuevamente. Las notas de los productos
-no se guardan al recargar ni se incluyen en el pedido. Las compras actualizan el
+navegador y se recuperan al recargar la página. Desde el carrito se puede
+acceder a `/checkout` para completar nombre, teléfono, método de entrega y
+fecha y hora estimada; para envíos también se requiere una dirección.
+Al confirmar se abre WhatsApp en otra pestaña con el pedido redactado y se
+vacía el carrito local; el cliente debe enviar el mensaje en WhatsApp.
+El número configurado en `components/CheckoutForm.tsx` es un número de prueba
+(`5491112345678`): reemplázalo por el número real con código de país y solo
+dígitos antes de usarlo con clientes. Las notas no se guardan al recargar. Las compras actualizan el
 contador del encabezado y muestran una confirmación temporal; el enlace del
 encabezado lleva al resumen del carrito. Las
 imágenes de productos pueden ser rutas locales de `public/` o enlaces HTTPS a
@@ -122,8 +129,8 @@ una dedicatoria opcional. Los productos usan la misma estructura
 `{ product: { name, price }, quantity }` que el carrito; el precio es unitario
 y el total se calcula a partir de las cantidades. Retorna solamente el texto
 codificado con `encodeURIComponent`, listo para usar como parámetro `text` en
-un enlace de WhatsApp. El checkout construye el enlace después de guardar
-el pedido, usando el número configurado para el comercio.
+un enlace de WhatsApp. El formulario de checkout construye el enlace completo
+y lo abre en una pestaña nueva.
 
 Tailwind CSS se importa en `app/globals.css` y se integra con Turbopack mediante
 `next.config.ts`.

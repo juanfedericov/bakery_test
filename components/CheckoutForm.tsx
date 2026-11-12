@@ -1,87 +1,69 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { buildWhatsAppUrl } from "@/lib/buildWhatsAppUrl";
 import { useCartStore } from "@/lib/store/useCartStore";
 
+const FACTORY_WHATSAPP_NUMBER = "5491112345678";
+
 export default function CheckoutForm({ whatsappNumber }: { whatsappNumber: string }) {
   const [deliveryMethod, setDeliveryMethod] = useState("");
-  const [hydrated, setHydrated] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
-  const [error, setError] = useState("");
-  const submittingRef = useRef(false);
+  const [cartReady, setCartReady] = useState(false);
+  const [message, setMessage] = useState("");
   const items = useCartStore((state) => state.items);
-  const dedication = useCartStore((state) => state.cakeDedication);
-  const whatsappConfigured = /^[1-9]\d{7,14}$/.test(whatsappNumber);
 
   useEffect(() => {
     let active = true;
-    Promise.resolve(useCartStore.persist.rehydrate()).then(() => {
-      if (active) setHydrated(true);
-    }).catch((rehydrationError: unknown) => {
-      console.error("No se pudo recuperar el carrito guardado.", rehydrationError);
-      if (active) setError("No se pudo recuperar el carrito guardado.");
-    });
+    async function recoverCart() {
+      try {
+        if (!useCartStore.persist.hasHydrated()) await useCartStore.persist.rehydrate();
+        if (!active) return;
+        if (useCartStore.persist.hasHydrated()) setCartReady(true);
+        else setMessage("No se pudo recuperar el carrito. Recargá la página para volver a intentar.");
+      } catch (error) {
+        console.error("No se pudo recuperar el carrito guardado.", error);
+        if (active) setMessage("No se pudo recuperar el carrito. Recargá la página para volver a intentar.");
+      }
+    }
+    void recoverCart();
     return () => { active = false; };
   }, []);
 
   return (
     <form
       className="checkout-form"
-      onChange={() => setError("")}
-      onSubmit={async (event) => {
+      onSubmit={(event) => {
         event.preventDefault();
-        if (submittingRef.current || !hydrated || items.length === 0 || !whatsappConfigured) return;
-        submittingRef.current = true;
-        setSubmitting(true);
-        setError("");
-        const formData = new FormData(event.currentTarget);
-        const customerName = String(formData.get("name")).trim();
-        const phone = String(formData.get("phone")).trim();
-        const address = String(formData.get("address") ?? "").trim();
-        const deliveryDateTime = String(formData.get("deliveryDateTime"));
-        let redirecting = false;
-        try {
-          const response = await fetch("/api/orders", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              customerName,
-              phone,
-              deliveryMethod,
-              address,
-              deliveryDateTime,
-              dedication,
-              items: items.map(({ product, quantity }) => ({
-                productId: product.id,
-                quantity,
-                unitPrice: product.price,
-              })),
-            }),
-          });
-          const result = await response.json();
-          if (!response.ok) {
-            setError(typeof result.error === "string" ? result.error : "No se pudo guardar el pedido. Intentá nuevamente.");
-            return;
-          }
-          const [date, time] = deliveryDateTime.split("T");
-          const formattedDate = date.split("-").reverse().join("/");
-          const delivery = deliveryMethod === "delivery" ? `Envío: ${address}` : "Retiro en local";
-          const message = buildWhatsAppUrl({
-            customerName, phone, delivery, date: formattedDate, time,
-            items: result.items, dedication,
-          });
-          window.location.assign(`https://wa.me/${whatsappNumber}?text=${message}`);
-          redirecting = true;
-        } catch (submitError) {
-          console.error("No se pudo enviar el pedido:", submitError);
-          setError("No se pudo confirmar el envío. Contactanos antes de intentar nuevamente para evitar pedidos duplicados.");
-        } finally {
-          if (!redirecting) {
-            submittingRef.current = false;
-            setSubmitting(false);
-          }
+        const cart = useCartStore.getState();
+        if (!cartReady || cart.items.length === 0) {
+          setMessage("Agregá productos al carrito antes de enviar el pedido.");
+          return;
         }
+
+        const data = new FormData(event.currentTarget);
+        const [date, time] = String(data.get("deliveryDateTime")).split("T");
+        const [year, month, day] = date.split("-");
+        const delivery = deliveryMethod === "delivery"
+          ? `Envío: ${String(data.get("address")).trim()}`
+          : "Retiro en local";
+        const text = buildWhatsAppUrl({
+          customerName: String(data.get("name")).trim(),
+          phone: String(data.get("phone")).trim(),
+          delivery,
+          date: `${day}/${month}/${year}`,
+          time,
+          items: cart.items,
+          dedication: cart.cakeDedication,
+        });
+
+        const opened = window.open(`https://wa.me/${FACTORY_WHATSAPP_NUMBER}?text=${text}`, "_blank");
+        if (!opened) {
+          setMessage("No se pudo abrir WhatsApp. Permití las ventanas emergentes y volvé a intentar.");
+          return;
+        }
+        opened.opener = null;
+        cart.clearCart();
+        setMessage("WhatsApp se abrió en otra pestaña. Revisá y enviá el mensaje para confirmar tu pedido.");
       }}
     >
       <p className="checkout-required">Todos los campos son obligatorios.</p>
@@ -111,12 +93,10 @@ export default function CheckoutForm({ whatsappNumber }: { whatsappNumber: strin
         <label htmlFor="checkout-datetime">Fecha y hora estimada de entrega</label>
         <input id="checkout-datetime" name="deliveryDateTime" type="datetime-local" required />
       </div>
-      <button type="submit" className="checkout-submit" disabled={!hydrated || !items.length || !whatsappConfigured || submitting}>
-        {submitting ? "Guardando pedido..." : "Enviar pedido por WhatsApp"}
-      </button>
-      {!whatsappConfigured && <p className="checkout-note" role="alert">El envío de pedidos no está configurado. Contactanos para hacer tu pedido.</p>}
-      {hydrated && items.length === 0 && <p className="checkout-note" role="status">Tu carrito está vacío. Agregá productos antes de enviar el pedido.</p>}
-      {error && <p className="checkout-note" role="alert">{error}</p>}
+      <button type="submit" className="checkout-submit" disabled={!cartReady || items.length === 0}>Confirmar y Enviar Pedido por WhatsApp</button>
+      <p className="checkout-note" role="status">
+        {message || (cartReady && items.length === 0 ? "Tu carrito está vacío. Agregá productos antes de enviar el pedido." : "")}
+      </p>
     </form>
   );
 }
