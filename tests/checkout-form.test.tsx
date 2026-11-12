@@ -19,7 +19,7 @@ test("valida el checkout, abre WhatsApp con el pedido y vacía el carrito persis
   }));
   const previous = new Map<string, PropertyDescriptor | undefined>();
   const globals = {
-    window: dom.window,
+    window: browser,
     document: dom.window.document,
     navigator: dom.window.navigator,
     HTMLElement: dom.window.HTMLElement,
@@ -43,9 +43,19 @@ test("valida el checkout, abre WhatsApp con el pedido y vacía el carrito persis
   const { createRoot } = await import("react-dom/client");
   const container = dom.window.document.getElementById("root")!;
   const root = createRoot(container);
+  const originalFetch = globalThis.fetch;
+  const requests: { input: RequestInfo | URL; init?: RequestInit }[] = [];
+  let resolveResponse!: (response: Response) => void;
+  globalThis.fetch = (input, init) => {
+    requests.push({ input, init });
+    return new Promise((resolve) => { resolveResponse = resolve; });
+  };
 
   try {
-    await act(async () => root.render(<CheckoutForm />));
+    await act(async () => root.render(<CheckoutForm whatsappNumber="" />));
+    assert.equal(container.querySelector<HTMLButtonElement>('[type="submit"]')!.disabled, true);
+    assert.match(container.textContent!, /no está configurado/);
+    await act(async () => root.render(<CheckoutForm whatsappNumber="5491112345678" />));
     const form = container.querySelector("form")!;
     const button = form.querySelector<HTMLButtonElement>('button[type="submit"]')!;
     const name = form.querySelector<HTMLInputElement>('[name="name"]')!;
@@ -120,6 +130,7 @@ test("valida el checkout, abre WhatsApp con el pedido y vacía el carrito persis
     assert.doesNotMatch(pickupMessage, /Dedicatoria|Calle #123/);
     assert.deepEqual(JSON.parse(dom.window.localStorage.getItem("bakery-cart")!).state.items, []);
   } finally {
+    globalThis.fetch = originalFetch;
     await act(async () => root.unmount());
     dom.window.close();
     for (const [key, descriptor] of previous) {

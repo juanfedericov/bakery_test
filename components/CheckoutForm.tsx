@@ -6,7 +6,7 @@ import { useCartStore } from "@/lib/store/useCartStore";
 
 const FACTORY_WHATSAPP_NUMBER = "5491112345678";
 
-export default function CheckoutForm() {
+export default function CheckoutForm({ whatsappNumber }: { whatsappNumber: string }) {
   const [deliveryMethod, setDeliveryMethod] = useState("");
   const [cartReady, setCartReady] = useState(false);
   const [message, setMessage] = useState("");
@@ -69,11 +69,11 @@ export default function CheckoutForm() {
       <p className="checkout-required">Todos los campos son obligatorios.</p>
       <div className="checkout-field">
         <label htmlFor="checkout-name">Nombre</label>
-        <input id="checkout-name" name="name" autoComplete="name" required pattern=".*\S.*" title="Ingresá tu nombre." />
+        <input id="checkout-name" name="name" autoComplete="name" maxLength={200} required pattern=".*\S.*" title="Ingresá tu nombre." />
       </div>
       <div className="checkout-field">
         <label htmlFor="checkout-phone">Teléfono</label>
-        <input id="checkout-phone" name="phone" type="tel" autoComplete="tel" required pattern=".*\S.*" title="Ingresá tu teléfono." />
+        <input id="checkout-phone" name="phone" type="tel" autoComplete="tel" maxLength={50} required pattern=".*\S.*" title="Ingresá tu teléfono." />
       </div>
       <div className="checkout-field">
         <label htmlFor="checkout-delivery">Método de entrega</label>
@@ -86,7 +86,7 @@ export default function CheckoutForm() {
       {deliveryMethod === "delivery" && (
         <div className="checkout-field">
           <label htmlFor="checkout-address">Dirección de entrega</label>
-          <input id="checkout-address" name="address" autoComplete="street-address" required pattern=".*\S.*" title="Ingresá la dirección de entrega." />
+          <input id="checkout-address" name="address" autoComplete="street-address" maxLength={500} required pattern=".*\S.*" title="Ingresá la dirección de entrega." />
         </div>
       )}
       <div className="checkout-field">

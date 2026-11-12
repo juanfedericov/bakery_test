@@ -1,18 +1,12 @@
-import { Prisma, PrismaClient } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import Catalog from "@/components/Catalog";
 import AboutSection from "@/components/AboutSection";
 import HeroSection from "@/components/HeroSection";
 import { CartProvider } from "@/components/CartProvider";
 import { isSupportedProductImage } from "@/lib/product-image";
+import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
-
-const globalForPrisma = globalThis as typeof globalThis & {
-  prisma?: PrismaClient;
-};
-const prisma = globalForPrisma.prisma ?? new PrismaClient();
-
-if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
 
 async function ProductList() {
   if (!process.env.DATABASE_URL) {

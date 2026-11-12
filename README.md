@@ -48,7 +48,13 @@ la página permanezca abierta, pero todavía no se envían ni guardan en un pedi
 El esquema contiene categorías, productos y pedidos. Cada producto pertenece a
 una categoría; cada línea de pedido registra el producto, la cantidad y el
 precio unitario de ese pedido. Los importes se almacenan como decimales para
-evitar errores de precisión de punto flotante.
+evitar errores de precisión de punto flotante. Los pedidos nuevos también guardan
+los datos del cliente y entrega, dedicatoria, total y estado «Pendiente»; los
+pedidos anteriores a esta migración pueden no tener esos datos.
+
+Configura `WHATSAPP_NUMBER` en `.env` con el número del comercio en formato
+internacional, solo dígitos y sin `+` (por ejemplo, `5491112345678`). Sin un
+número válido no se habilita el envío del checkout.
 
 ## Desarrollo
 
