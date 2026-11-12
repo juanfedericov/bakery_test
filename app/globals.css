@@ -91,6 +91,15 @@ a:focus-visible, button:focus-visible, summary:focus-visible { outline: 3px soli
 .cart-summary p { color: var(--muted); }
 .cart-summary li { display: flex; align-items: center; justify-content: space-between; gap: 16px; border-top: 1px solid #e7d8cb; padding: 8px 0; }
 .cart-summary button { min-height: 44px; padding: 8px; color: var(--rose); cursor: pointer; text-decoration: underline; }
+.cart-dedication { margin-top: 20px; }
+.cart-dedication label { display: block; margin-bottom: 8px; font-size: 14px; font-weight: 700; }
+.cart-dedication label span { color: var(--muted); font-weight: 400; }
+.cart-dedication textarea { display: block; width: 100%; padding: 12px; border: 1px solid #cdbbb0; background: white; color: var(--ink); resize: vertical; }
+.cart-dedication textarea:focus-visible { outline: 3px solid var(--rose); outline-offset: 2px; }
+.cart-dedication > p { margin-top: 8px; font-size: 12px; line-height: 1.5; }
+.cart-order-note { margin-top: 16px; padding: 16px; border: 1px solid #e7d8cb; background: #f8f0e6; }
+.cart-order-note h3 { font-family: Georgia, serif; font-size: 18px; }
+.cart-order-note p { margin-top: 8px; overflow-wrap: anywhere; white-space: pre-wrap; }
 .cart-summary-checkout { display: inline-flex; min-height: 44px; align-items: center; margin-top: 12px; color: var(--rose); font-weight: 700; text-decoration: underline; }
 .checkout-page { flex: 1; padding: 60px 7% 100px; }
 .checkout-inner { max-width: 620px; margin: auto; }

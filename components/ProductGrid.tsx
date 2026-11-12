@@ -15,8 +15,10 @@ export default function ProductGrid({
 }) {
   const { notify } = useCart();
   const items = useCartStore((state) => state.items);
+  const cakeDedication = useCartStore((state) => state.cakeDedication);
   const addToCart = useCartStore((state) => state.addProduct);
   const removeFromCart = useCartStore((state) => state.removeProduct);
+  const setCakeDedication = useCartStore((state) => state.setCakeDedication);
   const [selectedProduct, setSelectedProduct] = useState<CatalogProduct | null>(null);
   const [notes, setNotes] = useState<Record<string, string>>({});
 
