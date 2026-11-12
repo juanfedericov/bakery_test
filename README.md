@@ -68,12 +68,14 @@ retiro en fábrica. La ubicación y los horarios de retiro están pendientes de
 confirmación y deben actualizarse en `components/AboutSection.tsx`.
 
 El catálogo muestra los precios en pesos argentinos y permite agregar o quitar
-productos del carrito durante la visita. Los filtros por categoría no vacían el
+productos del carrito. Los filtros por categoría no vacían el
 carrito ni las notas de los productos. Para abrir el detalle, selecciona la
 imagen o información de una tarjeta; el botón «Agregar al Carrito» no abre el
-modal. El carrito muestra los subtotales y el total actualizados al agregar o
-quitar productos. Se mantiene solo en memoria:
-se vacía al recargar la página y todavía no permite finalizar pedidos. Las
+modal. El carrito y las cantidades se guardan en el almacenamiento local del
+navegador y se recuperan al recargar la página; todavía no permite finalizar
+pedidos. Las notas no se guardan al recargar. Las compras actualizan el
+contador del encabezado y muestran una confirmación temporal; el enlace del
+encabezado lleva al resumen del carrito. Las
 imágenes de productos pueden ser rutas locales de `public/` o enlaces HTTPS a
 `images.unsplash.com/photo-*`; las demás se muestran sin foto hasta configurar
 su origen en Next.js y actualizar la validación del catálogo.
