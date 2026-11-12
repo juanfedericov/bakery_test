@@ -68,11 +68,14 @@ retiro en fábrica. La ubicación y los horarios de retiro están pendientes de
 confirmación y deben actualizarse en `components/AboutSection.tsx`.
 
 El catálogo muestra los precios en pesos argentinos y permite agregar o quitar
-productos del carrito durante la visita. Los filtros por categoría no vacían el
+productos del carrito durante la visita. Abrí el carrito desde el ícono de la
+barra superior para ajustar cantidades, quitar productos y consultar el subtotal.
+Al reducir una cantidad a cero, el producto se elimina. Los filtros por categoría no vacían el
 carrito ni las notas de los productos. Para abrir el detalle, selecciona la
 imagen o información de una tarjeta; el botón «Agregar al Carrito» no abre el
 modal. El carrito se mantiene solo en memoria:
-se vacía al recargar la página y todavía no permite finalizar pedidos. Las
+se vacía al recargar la página y el botón de pago permanece deshabilitado hasta
+que se implemente el checkout. Las
 imágenes de productos pueden ser rutas locales de `public/` o enlaces HTTPS a
 `images.unsplash.com/photo-*`; las demás se muestran sin foto hasta configurar
 su origen en Next.js y actualizar la validación del catálogo.

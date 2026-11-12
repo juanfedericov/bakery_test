@@ -2,6 +2,7 @@ import { Prisma, PrismaClient } from "@prisma/client";
 import Catalog from "@/components/Catalog";
 import AboutSection from "@/components/AboutSection";
 import HeroSection from "@/components/HeroSection";
+import { CartProvider } from "@/components/CartProvider";
 import { isSupportedProductImage } from "@/lib/product-image";
 
 export const dynamic = "force-dynamic";
@@ -61,17 +62,19 @@ async function ProductList() {
 
 export default function Home() {
   return (
-    <main>
-      <HeroSection />
-      <section id="catalogo" className="catalog-section" aria-labelledby="catalog-title">
-        <div className="catalog-inner">
-          <p className="eyebrow">Hecho para compartir</p>
-          <h2 id="catalog-title">Nuestro catálogo</h2>
-          <p className="catalog-intro">Encontrá algo rico para cada ocasión.</p>
-          <ProductList />
-        </div>
-      </section>
-      <AboutSection />
-    </main>
+    <CartProvider>
+      <main>
+        <HeroSection />
+        <section id="catalogo" className="catalog-section" aria-labelledby="catalog-title">
+          <div className="catalog-inner">
+            <p className="eyebrow">Hecho para compartir</p>
+            <h2 id="catalog-title">Nuestro catálogo</h2>
+            <p className="catalog-intro">Encontrá algo rico para cada ocasión.</p>
+            <ProductList />
+          </div>
+        </section>
+        <AboutSection />
+      </main>
+    </CartProvider>
   );
 }

@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { CartButton } from "./CartProvider";
 
 export default function HeroSection() {
   return (
@@ -8,7 +9,10 @@ export default function HeroSection() {
           <span className="brand">
             bakery<span>.</span>
           </span>
-          <span className="header-note">PASTELERÍA ARTESANAL</span>
+          <div className="header-actions">
+            <span className="header-note">PASTELERÍA ARTESANAL</span>
+            <CartButton />
+          </div>
         </header>
 
         <div className="hero-content">

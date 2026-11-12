@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { renderToStaticMarkup } from "react-dom/server";
 import ProductGrid from "../components/ProductGrid";
+import { CartButton, CartProvider } from "../components/CartProvider";
 import { formatPrice } from "../components/ProductCard";
 import { isSupportedProductImage } from "../lib/product-image";
 
@@ -12,13 +13,13 @@ test("formatea precios enteros y con centavos en pesos argentinos", () => {
 
 test("renderiza las tarjetas y el estado inicial del carrito", () => {
   const html = renderToStaticMarkup(
-    <ProductGrid products={[
+    <CartProvider><CartButton /><ProductGrid products={[
       { id: "1", name: "Torta", description: "De chocolate", price: 15000, imageUrl: "/file.svg", categoryId: "1", ingredients: null, servings: null },
       { id: "2", name: "Tarta", description: null, price: 15000.5, imageUrl: null, categoryId: "2", ingredients: null, servings: null },
-    ]} />,
+    ]} /></CartProvider>,
   );
 
-  assert.match(html, /Carrito: 0 productos/);
+  assert.match(html, /Abrir carrito: 0 productos/);
   assert.match(html, /<h3>Torta<\/h3>/);
   assert.match(html, /De chocolate/);
   assert.match(html, /alt="Torta"/);
@@ -37,7 +38,7 @@ test("solo admite imágenes locales o de los orígenes configurados", () => {
 });
 
 test("muestra el estado vacío del catálogo", () => {
-  const html = renderToStaticMarkup(<ProductGrid products={[]} />);
+  const html = renderToStaticMarkup(<CartProvider><CartButton /><ProductGrid products={[]} /></CartProvider>);
   assert.match(html, /Todavía no hay productos en el catálogo/);
-  assert.match(html, /Carrito: 0 productos/);
+  assert.match(html, /Abrir carrito: 0 productos/);
 });

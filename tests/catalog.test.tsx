@@ -3,6 +3,7 @@ import test from "node:test";
 import { JSDOM } from "jsdom";
 import { act } from "react";
 import Catalog from "../components/Catalog";
+import { CartButton, CartProvider } from "../components/CartProvider";
 
 test("integra filtros, tarjetas, carrito y detalle con notas independientes", async () => {
   const dom = new JSDOM("<!doctype html><html><body><div id='root'></div></body></html>", {
@@ -47,16 +48,16 @@ test("integra filtros, tarjetas, carrito y detalle con notas independientes", as
 
   try {
     await act(async () => root.render(
-      <Catalog
+      <CartProvider><CartButton /><Catalog
         categories={[{ id: "tortas", name: "Tortas" }, { id: "tartas", name: "Tartas" }, { id: "vacia", name: "Vacía" }]}
-        products={[product, { ...product, id: "tarta", name: "Tarta", categoryId: "tartas", ingredients: null, servings: null, imageUrl: null }]}
-      />,
+        products={[product, { ...product, id: "tarta", name: "Tarta", categoryId: "tartas", ingredients: null, servings: null, imageUrl: null, price: 15000.5 }]}
+      /></CartProvider>,
     ));
 
     assert.match(container.textContent!, /\$\s*15\.000/);
     assert.ok(container.querySelector('img[alt="Torta Rogel"]'));
     await click('button[aria-label="Agregar Torta Rogel al carrito"]');
-    assert.match(container.textContent!, /Carrito: 1 producto/);
+    assert.ok(container.querySelector('button[aria-label="Abrir carrito: 1 producto"]'));
     assert.equal(container.querySelector("dialog"), null);
 
     await click('button[aria-label="Ver detalle de Torta Rogel"]');
@@ -82,7 +83,7 @@ test("integra filtros, tarjetas, carrito y detalle con notas independientes", as
     };
     await filter("Tartas");
     assert.equal(container.querySelector('button[aria-label="Ver detalle de Torta Rogel"]'), null);
-    assert.match(container.textContent!, /Carrito: 1 producto/);
+    assert.ok(container.querySelector('button[aria-label="Abrir carrito: 1 producto"]'));
     await click('button[aria-label="Ver detalle de Tarta"]');
     assert.equal(container.querySelector("textarea")!.value, "");
     assert.match(container.textContent!, /Ingredientes no disponibles/);
@@ -90,13 +91,45 @@ test("integra filtros, tarjetas, carrito y detalle con notas independientes", as
     await click('button[aria-label="Cerrar detalle"]');
     await filter("Vacía");
     assert.match(container.textContent!, /No hay productos en esta categoría/);
-    assert.match(container.textContent!, /Carrito: 1 producto/);
+    assert.ok(container.querySelector('button[aria-label="Abrir carrito: 1 producto"]'));
     await filter("Tortas");
     await click('button[aria-label="Ver detalle de Torta Rogel"]');
     assert.equal(container.querySelector("textarea")!.value, "Feliz cumpleaños");
     await click('button[aria-label="Cerrar detalle"]');
-    await click(".cart-summary button");
-    assert.match(container.textContent!, /Carrito: 0 productos/);
+    await click('button[aria-label="Abrir carrito: 1 producto"]');
+    assert.ok(container.querySelector(".cart-drawer[open]"));
+    assert.ok(container.querySelector('.cart-drawer img[alt="Torta Rogel"]'));
+    assert.match(container.querySelector(".cart-item-details")!.textContent!, /\$\s*15\.000 por unidad/);
+    assert.match(container.querySelector(".cart-subtotal")!.textContent!, /\$\s*15\.000/);
+    assert.ok(container.querySelector<HTMLButtonElement>(".cart-checkout")!.disabled);
+    await click('button[aria-label="Aumentar cantidad de Torta Rogel"]');
+    assert.match(container.querySelector(".cart-subtotal")!.textContent!, /\$\s*30\.000/);
+    assert.ok(container.querySelector('button[aria-label="Abrir carrito: 2 productos"]'));
+    await click('button[aria-label="Disminuir cantidad de Torta Rogel"]');
+    assert.match(container.querySelector(".cart-subtotal")!.textContent!, /\$\s*15\.000/);
+    await act(async () => container.querySelector(".cart-drawer")!.dispatchEvent(
+      new dom.window.KeyboardEvent("keydown", { key: "Escape", bubbles: true }),
+    ));
+    assert.equal(container.querySelector(".cart-drawer"), null);
+    await click('button[aria-label="Abrir carrito: 1 producto"]');
+    await click('button[aria-label="Disminuir cantidad de Torta Rogel"]');
+    assert.match(container.querySelector(".cart-drawer")!.textContent!, /Tu carrito está vacío/);
+    assert.match(container.querySelector(".cart-subtotal")!.textContent!, /\$\s*0/);
+    await click('button[aria-label="Cerrar carrito"]');
+    await click('button[aria-label="Agregar Torta Rogel al carrito"]');
+    await click('button[aria-label="Agregar Torta Rogel al carrito"]');
+    await filter("Tartas");
+    await click('button[aria-label="Agregar Tarta al carrito"]');
+    await click('button[aria-label="Abrir carrito: 3 productos"]');
+    assert.equal(container.querySelectorAll(".cart-item").length, 2);
+    assert.match(container.querySelector(".cart-drawer")!.textContent!, /Imagen no disponible/);
+    assert.match(container.querySelector(".cart-subtotal")!.textContent!, /\$\s*45\.000,50/);
+    const remove = Array.from(container.querySelectorAll<HTMLButtonElement>(".cart-remove"))
+      .find((button) => button.textContent?.includes("Torta Rogel"));
+    assert.ok(remove);
+    await act(async () => remove.click());
+    assert.equal(container.querySelectorAll(".cart-item").length, 1);
+    assert.match(container.querySelector(".cart-subtotal")!.textContent!, /\$\s*15\.000,50/);
   } finally {
     await act(async () => root.unmount());
     dom.window.close();
