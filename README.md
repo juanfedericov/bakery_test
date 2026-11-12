@@ -104,6 +104,15 @@ La página principal está en `/`; `/bakery` no es una ruta de esta aplicación.
 - `components/`: componentes reutilizables.
 - `lib/`: funciones y utilidades compartidas.
 
+`lib/buildWhatsAppUrl.ts` exporta `buildWhatsAppUrl`, que recibe los datos del
+cliente, teléfono, entrega, fecha (`DD/MM/AAAA`), hora (`HH:mm`), productos y
+una dedicatoria opcional. Los productos usan la misma estructura
+`{ product: { name, price }, quantity }` que el carrito; el precio es unitario
+y el total se calcula a partir de las cantidades. Retorna solamente el texto
+codificado con `encodeURIComponent`, listo para usar como parámetro `text` en
+un enlace de WhatsApp. No construye el enlace completo ni envía el pedido; el
+número del comercio y la integración del checkout están pendientes.
+
 Tailwind CSS se importa en `app/globals.css` y se integra con Turbopack mediante
 `next.config.ts`.
 
