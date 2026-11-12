@@ -13,6 +13,7 @@ type CartStore = {
   addProduct: (product: CatalogProduct) => void;
   removeProduct: (productId: string) => void;
   setCakeDedication: (dedication: string) => void;
+  clearCart: () => void;
 };
 
 export const useCartStore = create<CartStore>()(
@@ -34,6 +35,7 @@ export const useCartStore = create<CartStore>()(
         items: state.items.filter((item) => item.product.id !== productId),
       })),
       setCakeDedication: (cakeDedication) => set({ cakeDedication }),
+      clearCart: () => set({ items: [], cakeDedication: "" }),
     }),
     {
       name: "bakery-cart",

@@ -72,11 +72,14 @@ productos del carrito. Los filtros por categoría no vacían el
 carrito ni las notas de los productos. Para abrir el detalle, selecciona la
 imagen o información de una tarjeta; el botón «Agregar al Carrito» no abre el
 modal. El carrito y las cantidades se guardan en el almacenamiento local del
-navegador y se recuperan al recargar la página; todavía no permite finalizar
-pedidos. Desde el carrito se puede acceder a `/checkout` para completar y
-validar nombre, teléfono, método de entrega y fecha y hora estimada; para
-envíos también se requiere una dirección. Estos datos todavía no se guardan
-ni se envía el pedido. Las notas no se guardan al recargar. Las compras actualizan el
+navegador y se recuperan al recargar la página. Desde el carrito se puede
+acceder a `/checkout` para completar nombre, teléfono, método de entrega y
+fecha y hora estimada; para envíos también se requiere una dirección.
+Al confirmar se abre WhatsApp en otra pestaña con el pedido redactado y se
+vacía el carrito local; el cliente debe enviar el mensaje en WhatsApp.
+El número configurado en `components/CheckoutForm.tsx` es un número de prueba
+(`5491112345678`): reemplázalo por el número real con código de país y solo
+dígitos antes de usarlo con clientes. Las notas no se guardan al recargar. Las compras actualizan el
 contador del encabezado y muestran una confirmación temporal; el enlace del
 encabezado lleva al resumen del carrito. Las
 imágenes de productos pueden ser rutas locales de `public/` o enlaces HTTPS a
@@ -113,8 +116,8 @@ una dedicatoria opcional. Los productos usan la misma estructura
 `{ product: { name, price }, quantity }` que el carrito; el precio es unitario
 y el total se calcula a partir de las cantidades. Retorna solamente el texto
 codificado con `encodeURIComponent`, listo para usar como parámetro `text` en
-un enlace de WhatsApp. No construye el enlace completo ni envía el pedido; el
-número del comercio y la integración del checkout están pendientes.
+un enlace de WhatsApp. El formulario de checkout construye el enlace completo
+y lo abre en una pestaña nueva.
 
 Tailwind CSS se importa en `app/globals.css` y se integra con Turbopack mediante
 `next.config.ts`.
