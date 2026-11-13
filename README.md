@@ -93,8 +93,8 @@ vacía el carrito local; el cliente debe enviar el mensaje en WhatsApp.
 El número configurado en `components/CheckoutForm.tsx` es un número de prueba
 (`5491112345678`): reemplázalo por el número real con código de país y solo
 dígitos antes de usarlo con clientes. Las notas no se guardan al recargar. Las compras actualizan el
-contador del encabezado y muestran una confirmación temporal; el enlace del
-encabezado lleva al resumen del carrito. Las
+contador del encabezado y muestran una confirmación temporal; el botón del
+carrito abre un modal con productos, precios, subtotal y acceso al checkout. Las
 imágenes de productos pueden ser rutas locales de `public/` o enlaces HTTPS a
 `images.unsplash.com/photo-*`; las demás se muestran sin foto hasta configurar
 su origen en Next.js y actualizar la validación del catálogo.

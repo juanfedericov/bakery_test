@@ -26,7 +26,8 @@ a:focus-visible, button:focus-visible, summary:focus-visible { outline: 3px soli
 .header-actions { display: flex; align-items: center; gap: 24px; }
 .cart-button { display: flex; align-items: center; justify-content: center; gap: 6px; min-width: 48px; min-height: 48px; color: var(--ink); cursor: pointer; font-size: 13px; font-weight: 700; }
 .cart-button svg { width: 24px; height: 24px; }
-.header-cart { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; color: var(--ink); font-size: 13px; font-weight: 700; text-decoration: none; }
+.header-cart { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; color: var(--ink); cursor: pointer; font-size: 13px; font-weight: 700; }
+.header-cart svg { width: 22px; height: 22px; }
 .cart-badge { display: inline-flex; min-width: 24px; height: 24px; align-items: center; justify-content: center; border-radius: 12px; padding: 0 6px; background: var(--rose); color: white; font-size: 12px; }
 .cart-toast-region { position: fixed; z-index: 20; right: 24px; bottom: 24px; max-width: min(360px, calc(100vw - 32px)); }
 .cart-toast { padding: 16px 20px; border: 1px solid #e7d8cb; background: #fffaf5; color: var(--ink); box-shadow: 0 4px 20px rgb(61 41 37 / 18%); font-size: 14px; font-weight: 700; }
@@ -62,7 +63,7 @@ a:focus-visible, button:focus-visible, summary:focus-visible { outline: 3px soli
 .catalog-filter:hover { border-color: var(--rose); }
 .catalog-filter[aria-pressed="true"] { border-color: var(--rose); background: var(--rose); color: white; }
 .catalog-filter:focus-visible { outline: 3px solid var(--rose); outline-offset: 3px; }
-.cart-drawer { position: fixed; inset: 0 0 0 auto; width: min(100%, 460px); max-width: 100%; height: 100%; max-height: 100%; margin: 0; padding: 0; border: 0; background: #fffaf5; color: var(--ink); overflow: hidden; }
+.cart-drawer { position: fixed; inset: 0; width: min(100% - 32px, 560px); max-width: 100%; height: min(90vh, 700px); max-height: 90vh; margin: auto; padding: 0; border: 1px solid #e7d8cb; background: #fffaf5; color: var(--ink); overflow: hidden; }
 .cart-drawer::backdrop { background: rgb(61 41 37 / 65%); }
 .cart-drawer-content { display: flex; flex-direction: column; height: 100%; }
 .cart-drawer-header { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 32px; border-bottom: 1px solid #e7d8cb; }
@@ -76,14 +77,11 @@ a:focus-visible, button:focus-visible, summary:focus-visible { outline: 3px soli
 .cart-item-details h3 { font-family: Georgia, serif; font-size: 20px; overflow-wrap: anywhere; }
 .cart-item-details p { margin-top: 6px; color: var(--muted); font-size: 13px; }
 .cart-item-actions { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; margin-top: 12px; }
-.cart-quantity { display: flex; align-items: center; border: 1px solid #e7d8cb; }
-.cart-quantity button { width: 44px; height: 44px; cursor: pointer; font-size: 20px; }
-.cart-quantity span { min-width: 24px; text-align: center; font-size: 14px; }
 .cart-remove { min-height: 44px; color: var(--rose); cursor: pointer; font-size: 13px; text-decoration: underline; }
 .cart-drawer-footer { padding: 24px 32px 32px; border-top: 1px solid #e7d8cb; }
 .cart-subtotal { display: flex; justify-content: space-between; gap: 16px; font-size: 16px; }
-.cart-checkout { width: 100%; min-height: 48px; margin-top: 20px; padding: 12px; background: #b6a7a0; color: white; font-weight: 700; cursor: not-allowed; }
-.cart-drawer-footer p { margin-top: 10px; color: var(--muted); font-size: 12px; text-align: center; }
+.cart-checkout { display: flex; width: 100%; min-height: 48px; align-items: center; justify-content: center; margin-top: 20px; padding: 12px; background: var(--rose); color: white; font-weight: 700; }
+.cart-checkout:hover { background: #863d3a; }
 .cart-summary { scroll-margin-top: 116px; margin-top: 32px; border: 1px solid #e7d8cb; padding: 16px; background: #fffaf5; }
 .cart-summary summary { cursor: pointer; font-weight: 700; min-height: 44px; display: flex; align-items: center; }
 .cart-summary summary::before { content: "▸"; margin-right: 10px; }

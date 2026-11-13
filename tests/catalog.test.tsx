@@ -61,10 +61,10 @@ test("integra filtros, tarjetas, carrito y detalle con notas independientes", as
 
     assert.match(container.textContent!, /\$\s*15\.000/);
     assert.ok(container.querySelector('img[alt="Torta Rogel"]'));
-    const nav = container.querySelector<HTMLAnchorElement>(".header-cart")!;
+    const nav = container.querySelector<HTMLButtonElement>(".header-cart")!;
     const toast = container.querySelector<HTMLElement>(".cart-toast-region")!;
     assert.equal(nav.getAttribute("aria-label"), "Carrito: 0 productos");
-    assert.equal(nav.getAttribute("href"), "#carrito");
+    assert.equal(nav.getAttribute("aria-haspopup"), "dialog");
     assert.equal(toast.textContent, "");
     const dedication = container.querySelector<HTMLTextAreaElement>("#cake-dedication")!;
     const dedicationValueSetter = Object.getOwnPropertyDescriptor(dom.window.HTMLTextAreaElement.prototype, "value")!.set!;
