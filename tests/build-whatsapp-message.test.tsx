@@ -13,16 +13,16 @@ test("renderiza el ejemplo de pedido con saltos LF", () => {
   });
 
   assert.equal(message, [
-    "🎂 *NUEVO PEDIDO - FÁBRICA DE TORTAS*",
-    "👤 *Cliente:* pepe",
-    "📞 *Teléfono:* 3300",
-    "🚚 *Entrega:* Envío: arturo",
-    "📅 *Fecha:* 19/11/2026 - 07:10 hs",
+    "*NUEVO PEDIDO - FÁBRICA DE TORTAS*",
+    "*Cliente:* pepe",
+    "*Teléfono:* 3300",
+    "*Entrega:* Envío: arturo",
+    "*Fecha:* 19/11/2026 - 07:10 hs",
     "",
-    "📋 *Detalle del Pedido:*",
-    "• 1x Mousse de chocolate ($5.000)",
+    "*Detalle del Pedido:*",
+    "- 1x Mousse de chocolate ($5.000)",
     "",
-    "💰 *TOTAL:* $5.000",
+    "*TOTAL:* $5.000",
   ].join("\n"));
   assert.doesNotMatch(message, /\r/);
 });
@@ -41,17 +41,17 @@ test("genera el mensaje del pedido con el formato y saltos esperados para WhatsA
   });
 
   assert.equal(message, [
-    "🎂 *NUEVO PEDIDO - FÁBRICA DE TORTAS*",
-    "👤 *Cliente:* María",
-    "📞 *Teléfono:* +549...",
-    "🚚 *Entrega:* Retiro en local",
-    "📅 *Fecha:* 15/11/2026 - 16:00 hs",
+    "*NUEVO PEDIDO - FÁBRICA DE TORTAS*",
+    "*Cliente:* María",
+    "*Teléfono:* +549...",
+    "*Entrega:* Retiro en local",
+    "*Fecha:* 15/11/2026 - 16:00 hs",
     "",
-    "📋 *Detalle del Pedido:*",
-    "• 1x Torta Marquise ($10.000)",
-    "• 1x Lemon Pie ($8.000)",
+    "*Detalle del Pedido:*",
+    "- 1x Torta Marquise ($10.000)",
+    "- 1x Lemon Pie ($8.000)",
     "",
-    "💰 *TOTAL:* $18.000",
+    "*TOTAL:* $18.000",
   ].join("\n"));
   assert.doesNotMatch(message, /\r/);
 });
@@ -71,8 +71,8 @@ test("calcula cantidades y centavos y preserva caracteres UTF-8", () => {
 
   assert.match(message, /Cliente:\* Ana & José/);
   assert.match(message, /Entrega:\* Envío #1/);
-  assert.match(message, /• 3x Tarta \+ crema \(\$100,25\)/);
-  assert.match(message, /• 2x Alfajor \(\$0,10\)/);
+  assert.match(message, /- 3x Tarta \+ crema \(\$100,25\)/);
+  assert.match(message, /- 2x Alfajor \(\$0,10\)/);
   assert.match(message, /\*TOTAL:\* \$300,95$/);
   assert.doesNotMatch(message, /Dedicatoria/);
   assert.doesNotMatch(message, /[\u0000-\u0009\u000B-\u001F\u007F\uFFFD]/);

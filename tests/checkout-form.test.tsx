@@ -97,20 +97,19 @@ test("valida el checkout, abre WhatsApp con el pedido y vacía el carrito persis
     assert.equal(calls[1].target, "_blank");
     const url = new URL(calls[1].url);
     assert.equal(url.origin + url.pathname, "https://wa.me/5491166778899");
-    assert.match(calls[1].url, /%E2%80%A2/);
     assert.match(calls[1].url, /%0A/);
     assert.doesNotMatch(calls[1].url, /FÁBRICA/);
     assert.equal(url.searchParams.get("text"), [
-      "🎂 *NUEVO PEDIDO - FÁBRICA DE TORTAS*",
-      "👤 *Cliente:* Ana & José",
-      "📞 *Teléfono:* 123456789",
-      "🚚 *Entrega:* Envío: Calle #123",
-      "📅 *Fecha:* 20/12/2026 - 14:30 hs",
+      "*NUEVO PEDIDO - FÁBRICA DE TORTAS*",
+      "*Cliente:* Ana & José",
+      "*Teléfono:* 123456789",
+      "*Entrega:* Envío: Calle #123",
+      "*Fecha:* 20/12/2026 - 14:30 hs",
       "",
-      "📋 *Detalle del Pedido:*",
-      "• 2x Torta + crema ($100,25)",
+      "*Detalle del Pedido:*",
+      "- 2x Torta + crema ($100,25)",
       "",
-      "💰 *TOTAL:* $200,50",
+      "*TOTAL:* $200,50",
     ].join("\n"));
     assert.equal(opened.opener, null);
     assert.deepEqual(useCartStore.getState().items, []);
