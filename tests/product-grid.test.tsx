@@ -11,7 +11,7 @@ test("formatea precios enteros y con centavos en pesos argentinos", () => {
   assert.equal(formatPrice(15000.5).replace(/\s/g, ""), "$15.000,50");
 });
 
-test("renderiza las tarjetas y el estado inicial del carrito", () => {
+test("renderiza las tarjetas sin un resumen de carrito duplicado", () => {
   const html = renderToStaticMarkup(
     <CartProvider><ProductGrid products={[
       { id: "1", name: "Torta", description: "De chocolate", price: 15000, imageUrl: "/file.svg", categoryId: "1", ingredients: null, servings: null },
@@ -19,8 +19,8 @@ test("renderiza las tarjetas y el estado inicial del carrito", () => {
     ]} /></CartProvider>,
   );
 
-  assert.match(html, /Carrito: 0 productos/);
-  assert.match(html.replace(/\s/g, ""), /Total:\$0/);
+  assert.doesNotMatch(html, /<summary/);
+  assert.doesNotMatch(html, /cart-summary/);
   assert.match(html, /<h3>Torta<\/h3>/);
   assert.match(html, /De chocolate/);
   assert.match(html, /alt="Torta"/);
@@ -41,5 +41,5 @@ test("solo admite imágenes locales o de los orígenes configurados", () => {
 test("muestra el estado vacío del catálogo", () => {
   const html = renderToStaticMarkup(<CartProvider><ProductGrid products={[]} /></CartProvider>);
   assert.match(html, /Todavía no hay productos en el catálogo/);
-  assert.match(html, /Carrito: 0 productos/);
+  assert.doesNotMatch(html, /<summary/);
 });
