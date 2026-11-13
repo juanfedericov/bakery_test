@@ -83,7 +83,6 @@ test("integra filtros, tarjetas, carrito y detalle con notas independientes", as
     assert.equal(container.querySelector(".cart-order-note"), null);
     t.mock.timers.enable({ apis: ["setTimeout"] });
     await click('button[aria-label="Agregar Torta Rogel al carrito"]');
-    assert.match(container.textContent!, /Carrito: 1 producto/);
     assert.equal(nav.getAttribute("aria-label"), "Carrito: 1 producto");
     assert.match(toast.textContent!, /Torta Rogel agregado al carrito. Cantidad: 1/);
     await act(async () => t.mock.timers.tick(3000));
@@ -119,7 +118,7 @@ test("integra filtros, tarjetas, carrito y detalle con notas independientes", as
     };
     await filter("Tartas");
     assert.equal(container.querySelector('button[aria-label="Ver detalle de Torta Rogel"]'), null);
-    assert.match(container.textContent!, /Carrito: 2 productos/);
+    assert.equal(nav.getAttribute("aria-label"), "Carrito: 2 productos");
     await click('button[aria-label="Agregar Tarta al carrito"]');
     assert.equal(nav.getAttribute("aria-label"), "Carrito: 3 productos");
     assert.match(toast.textContent!, /Tarta agregado al carrito. Cantidad: 1/);
@@ -130,15 +129,15 @@ test("integra filtros, tarjetas, carrito y detalle con notas independientes", as
     await click('button[aria-label="Cerrar detalle"]');
     await filter("Vacía");
     assert.match(container.textContent!, /No hay productos en esta categoría/);
-    assert.match(container.textContent!, /Carrito: 3 productos/);
+    assert.equal(nav.getAttribute("aria-label"), "Carrito: 3 productos");
     await filter("Tortas");
     await click('button[aria-label="Ver detalle de Torta Rogel"]');
     assert.equal(container.querySelector<HTMLTextAreaElement>(".product-modal textarea")!.value, "Feliz cumpleaños");
     await click('button[aria-label="Cerrar detalle"]');
-    await click(".cart-summary button");
+    await click(".header-cart");
+    await click(".cart-remove");
     assert.equal(nav.getAttribute("aria-label"), "Carrito: 1 producto");
-    await click(".cart-summary button");
-    assert.match(container.textContent!, /Carrito: 0 productos/);
+    await click(".cart-remove");
     assert.equal(nav.getAttribute("aria-label"), "Carrito: 0 productos");
   } finally {
     await act(async () => root.unmount());
