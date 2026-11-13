@@ -29,12 +29,10 @@ function CartItemImage({ product }: { product: CatalogProduct }) {
 }
 
 export default function CartDrawer({
-  items, onClose, onIncrease, onDecrease, onRemove,
+  items, onClose, onRemove,
 }: {
   items: CartItem[];
   onClose: () => void;
-  onIncrease: (product: CatalogProduct) => void;
-  onDecrease: (product: CatalogProduct) => void;
   onRemove: (product: CatalogProduct) => void;
 }) {
   const dialogRef = useRef<HTMLDialogElement>(null);
@@ -82,12 +80,8 @@ export default function CartDrawer({
                   <div className="cart-item-details">
                     <h3>{product.name}</h3>
                     <p>{formatPrice(product.price)} por unidad</p>
+                    <p>Cantidad: {quantity}</p>
                     <div className="cart-item-actions">
-                      <div className="cart-quantity" aria-label={`Cantidad de ${product.name}`}>
-                        <button type="button" onClick={() => onDecrease(product)} aria-label={`Disminuir cantidad de ${product.name}`}>−</button>
-                        <span>{quantity}</span>
-                        <button type="button" onClick={() => onIncrease(product)} aria-label={`Aumentar cantidad de ${product.name}`}>+</button>
-                      </div>
                       <button type="button" className="cart-remove" onClick={() => onRemove(product)}>Quitar <span className="sr-only">{product.name}</span></button>
                     </div>
                   </div>
@@ -98,8 +92,7 @@ export default function CartDrawer({
         </div>
         <footer className="cart-drawer-footer">
           <div className="cart-subtotal"><span>Subtotal</span><strong>{formatPrice(subtotal)}</strong></div>
-          <button type="button" className="cart-checkout" disabled>Ir a pagar</button>
-          <p>El checkout todavía no está disponible.</p>
+          {items.length > 0 && <a className="cart-checkout" href="/checkout">Ir al checkout</a>}
         </footer>
       </div>
     </dialog>
