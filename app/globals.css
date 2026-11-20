@@ -5,6 +5,7 @@
   --muted: #7d6860;
   --rose: #a64e4b;
   --cream: #fbf7f0;
+  --hero-surface: #f7eee2;
 }
 
 @theme inline {
@@ -16,8 +17,8 @@ html { scroll-behavior: smooth; }
 body { background: var(--cream); color: var(--ink); font-family: Arial, Helvetica, sans-serif; }
 a:focus-visible, button:focus-visible, summary:focus-visible { outline: 3px solid #a64e4b; outline-offset: 5px; }
 
-.hero { background: #f8f0e6; overflow: hidden; }
-.site-header { position: sticky; top: 0; z-index: 10; background: #f8f0e6; }
+.hero { background: var(--hero-surface); overflow: hidden; }
+.site-header { position: sticky; top: 0; z-index: 10; background: var(--hero-surface); }
 .hero-inner { max-width: 1440px; margin: auto; padding: 0 7%; }
 .hero-header { height: 100px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #e7d8cb; }
 .brand { color: var(--ink); font-family: Georgia, serif; font-size: 34px; font-weight: 700; letter-spacing: -2px; text-decoration: none; }
@@ -47,9 +48,9 @@ a:focus-visible, button:focus-visible, summary:focus-visible { outline: 3px soli
 .hero-signature span { color: var(--rose); font-size: 20px; margin-right: 6px; vertical-align: middle; }
 .hero-visual { position: relative; width: 100%; max-width: 560px; height: 500px; justify-self: end; }
 .hero-photo-main { position: absolute; inset: 0 5% 0 12%; overflow: hidden; border-radius: 48% 48% 2px 2px; background: #dec2b2; }
-.hero-photo-small { position: absolute; width: 37%; height: 43%; right: 0; bottom: -7%; border: 8px solid #f8f0e6; border-radius: 48% 48% 2px 2px; overflow: hidden; background: #dec2b2; }
+.hero-photo-small { position: absolute; width: 37%; height: 43%; right: 0; bottom: -7%; border: 8px solid var(--hero-surface); border-radius: 48% 48% 2px 2px; overflow: hidden; background: #dec2b2; }
 .hero-image { object-fit: cover; }
-.hero-stamp { position: absolute; top: 8%; left: 0; display: flex; width: 108px; height: 108px; flex-direction: column; align-items: center; justify-content: center; border-radius: 50%; background: #f8f0e6; color: var(--rose); text-align: center; transform: rotate(-12deg); }
+.hero-stamp { position: absolute; top: 8%; left: 0; display: flex; width: 108px; height: 108px; flex-direction: column; align-items: center; justify-content: center; border-radius: 50%; background: var(--hero-surface); color: var(--rose); text-align: center; transform: rotate(-12deg); }
 .hero-stamp span { font-size: 8px; font-weight: 700; letter-spacing: .12em; }
 .hero-stamp strong { font-family: Georgia, serif; font-size: 25px; font-style: italic; font-weight: 400; line-height: 1.2; }
 .hero-sparkle { position: absolute; right: -3%; top: 8%; color: #c37967; font-size: 35px; }
