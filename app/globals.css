@@ -190,5 +190,5 @@ a:focus-visible, button:focus-visible, summary:focus-visible { outline: 3px soli
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  .hero-cta, .product-add { transition: none; }
+  .hero-cta, .catalog-filter, .product-add { transition: none; }
 }
