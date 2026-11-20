@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-const title = "Fábrica de Tortas - Pedidos Online";
+const title = "BAKERY — Pastelería artesanal";
 const description = "Tortas y delicias artesanales para celebrar cada ocasión. Hacé tu pedido online.";
 const socialImage = {
   url: "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=1200&h=630&fit=crop",
