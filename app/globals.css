@@ -40,7 +40,8 @@ a:focus-visible, button:focus-visible, summary:focus-visible { outline: 3px soli
 .hero h1 { margin: 24px 0; font-size: clamp(52px, 5.5vw, 80px); line-height: 1.04; }
 .hero h1 em { color: var(--rose); font-weight: 400; }
 .hero-description { max-width: 400px; color: var(--muted); font-size: 16px; line-height: 1.8; }
-.hero-cta { display: inline-flex; align-items: center; justify-content: space-between; gap: 42px; margin-top: 32px; padding: 19px 24px; background: var(--rose); color: white; font-size: 13px; font-weight: 700; text-decoration: none; transition: background .2s; }
+.hero-cta { display: inline-flex; align-items: center; justify-content: space-between; gap: 42px; margin-top: 32px; padding: 19px 24px; background: var(--rose); color: white; font-size: 13px; font-weight: 700; text-decoration: none; }
+.hero-cta, .catalog-filter { transition: background-color .2s ease, border-color .2s ease, color .2s ease; }
 .hero-cta:hover { background: #863d3a; }
 .hero-cta span { font-size: 18px; line-height: 1; }
 .hero-signature { margin-top: 38px; color: #8d7a70; font-family: Georgia, serif; font-size: 13px; font-style: italic; }
@@ -61,9 +62,9 @@ a:focus-visible, button:focus-visible, summary:focus-visible { outline: 3px soli
 .catalog-message { margin-top: 32px; }
 .catalog-filters { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 32px; }
 .catalog-filter { border: 1px solid #e7d8cb; background: transparent; color: var(--ink); cursor: pointer; padding: 10px 18px; font-size: 13px; font-weight: 700; }
-.catalog-filter:hover { border-color: var(--rose); }
+.catalog-filter:hover { border-color: var(--rose); background: #f8f0e6; color: var(--rose); }
 .catalog-filter[aria-pressed="true"] { border-color: var(--rose); background: var(--rose); color: white; }
-.catalog-filter:focus-visible { outline: 3px solid var(--rose); outline-offset: 3px; }
+.catalog-filter[aria-pressed="true"]:hover { background: #863d3a; }
 .cart-drawer { position: fixed; inset: 0; width: min(100% - 32px, 560px); max-width: 100%; height: min(90vh, 700px); max-height: 90vh; margin: auto; padding: 0; border: 1px solid #e7d8cb; background: #fffaf5; color: var(--ink); overflow: hidden; }
 .cart-drawer::backdrop { background: rgb(61 41 37 / 65%); }
 .cart-drawer-content { display: flex; flex-direction: column; height: 100%; }
@@ -183,5 +184,5 @@ a:focus-visible, button:focus-visible, summary:focus-visible { outline: 3px soli
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  .hero-cta, .product-add { transition: none; }
+  .hero-cta, .catalog-filter, .product-add { transition: none; }
 }
