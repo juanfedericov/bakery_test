@@ -61,9 +61,9 @@ export default function Home() {
         <HeroSection />
         <section id="catalogo" className="catalog-section" aria-labelledby="catalog-title">
           <div className="catalog-inner">
-            <p className="eyebrow">Hecho para compartir</p>
-            <h2 id="catalog-title">Nuestro catálogo</h2>
-            <p className="catalog-intro">Encontrá algo rico para cada ocasión.</p>
+            <p className="eyebrow">Nuestra selección</p>
+            <h2 id="catalog-title">Creaciones para compartir</h2>
+            <p className="catalog-intro">Tortas y dulces para darles un lugar especial a los momentos cotidianos.</p>
             <ProductList />
           </div>
         </section>
