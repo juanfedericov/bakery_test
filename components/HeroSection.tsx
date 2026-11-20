@@ -8,7 +8,7 @@ export default function HeroSection() {
         <div className="hero-inner">
           <div className="hero-header">
             <span className="brand">
-              bakery<span>.</span>
+              BAKERY
             </span>
             <span className="header-note">PASTELERÍA ARTESANAL</span>
             <CartNav />
@@ -20,9 +20,9 @@ export default function HeroSection() {
 
         <div className="hero-content">
           <div className="hero-copy">
-            <p className="eyebrow"><span aria-hidden="true">✦</span> Un poquito de felicidad</p>
+            <p className="eyebrow"><span aria-hidden="true">✦</span> Hecho con calma</p>
             <h1 id="hero-title">
-              Los momentos dulces <em>se comparten.</em>
+              Pequeños placeres, <em>grandes recuerdos.</em>
             </h1>
             <p className="hero-description">
               Tortas y delicias hechas con amor para celebrar lo cotidiano y hacer
