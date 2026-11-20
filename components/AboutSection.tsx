@@ -3,8 +3,8 @@ export default function AboutSection() {
     <section id="sobre-nosotros" className="about-section" aria-labelledby="about-title">
       <div className="about-inner">
         <div className="about-heading">
-          <p className="eyebrow">Sobre nosotros</p>
-          <h2 id="about-title">Lo bueno está en los detalles.</h2>
+          <p className="eyebrow">Nuestra esencia</p>
+          <h2 id="about-title">Lo hecho a mano deja huella.</h2>
           <p>
             Creemos que los momentos más dulces empiezan con ingredientes de
             calidad y el cuidado de hacer las cosas a mano.
