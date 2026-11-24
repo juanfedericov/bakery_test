@@ -5,6 +5,17 @@ import nextTs from "eslint-config-next/typescript";
 const eslintConfig = defineConfig([
   ...nextVitals,
   ...nextTs,
+  {
+    rules: {
+      "no-console": ["error", { allow: ["error"] }],
+    },
+  },
+  {
+    files: ["prisma/seed.ts"],
+    rules: {
+      "no-console": ["error", { allow: ["error", "log"] }],
+    },
+  },
   // Override default ignores of eslint-config-next.
   globalIgnores([
     // Default ignores of eslint-config-next:
