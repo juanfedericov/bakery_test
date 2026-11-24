@@ -7,6 +7,21 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Weekday {
+  MONDAY
+  TUESDAY
+  WEDNESDAY
+  THURSDAY
+  FRIDAY
+  SATURDAY
+  SUNDAY
+}
+
+enum ScheduleDeliveryMethod {
+  PICKUP   @map("pickup")
+  DELIVERY @map("delivery")
+}
+
 model Category {
   id        String    @id @default(cuid())
   name      String    @unique
@@ -59,4 +74,32 @@ model OrderItem {
 
   @@index([orderId])
   @@index([productId])
+}
+
+model WeeklyScheduleRule {
+  id                  String                 @id @default(cuid())
+  weekday             Weekday
+  deliveryMethod      ScheduleDeliveryMethod
+  isOpen              Boolean
+  opensAt             DateTime               @db.Time(0)
+  closesAt            DateTime               @db.Time(0)
+  slotIntervalMinutes Int
+  createdAt           DateTime               @default(now())
+  updatedAt           DateTime               @updatedAt
+
+  @@unique([weekday, deliveryMethod])
+}
+
+model ScheduleException {
+  id                  String                 @id @default(cuid())
+  date                DateTime               @db.Date
+  deliveryMethod      ScheduleDeliveryMethod
+  isClosed            Boolean
+  opensAt             DateTime?              @db.Time(0)
+  closesAt            DateTime?              @db.Time(0)
+  slotIntervalMinutes Int?
+  createdAt           DateTime               @default(now())
+  updatedAt           DateTime               @updatedAt
+
+  @@unique([date, deliveryMethod])
 }
